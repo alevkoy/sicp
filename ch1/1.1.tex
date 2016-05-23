@@ -2,6 +2,91 @@
 \author{Abraham Levkoy}
 \title{SICP exercises, section 1.1}
 
+\usepackage{color}
+\usepackage{listings}
+
 \begin{document}
 \maketitle
+
+\lstset{
+    language=Lisp,
+    otherkeywords={define,if,else},
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{magenta}\\ttfamily
+}
+
+\section{Exercise 1.1}
+
+\begin{quote}
+    Below is a sequence of expressions. What is the result printed by the
+    interpreter in response to each expression? Assume that the sequence is to
+    be evaluated in the order in which it is presented.
+\end{quote}
+
+\noindent \lstinline|10| \\
+\emph{10}
+
+\noindent \lstinline|(+ 5 3 4)| \\
+\emph{12}
+
+\noindent \lstinline|(- 9 1)| \\
+\emph{8}
+
+\noindent \lstinline|(/ 6 2)| \\
+\emph{3}
+
+\noindent \lstinline|(+ (* 2 4) (- 4 6))| \\
+\emph{6}
+
+\noindent \lstinline|(define a 3)| \\
+\emph{[stored value a]}
+
+\noindent \lstinline|(define b (+ a 1))| \\
+\emph{[stored value b]}
+
+\noindent \lstinline|(+ a b (* a b))| \\
+\emph{19}
+
+\noindent \lstinline|(= a b)| \\
+\emph{\#f}
+
+\begin{lstlisting}
+(if (and (> b a) (< b (* a b)))
+    b
+    a)
+\end{lstlisting}
+\emph{4}
+
+\begin{lstlisting}
+(cond ((= a 4) 6)
+      ((= b 4) (+ 6 7 a))
+      (else 25))
+\end{lstlisting}
+\emph{16}
+
+\noindent \lstinline|(+ 2 (if (> b a) b a))| \\
+\emph{6}
+
+\begin{lstlisting}
+(* (cond ((> a b) a)
+         ((< a b) b)
+         (else -1))
+   (+ a 1))
+\end{lstlisting}
+\emph{16}
+
+\section{Exercise 1.2}
+
+\begin{quote}
+    Translate the following expression into prefix form:
+    \begin{math}
+        \frac{5+4+(2-(3-6+\frac{4}{5}))}{3(6-2)(2-7)}
+    \end{math}.
+\end{quote}
+
+\lstinline|(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))|
+
 \end{document}
