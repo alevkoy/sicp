@@ -1,2 +1,10 @@
-# sicp
-Exercises from Structure and Interpretation of Computer Programs, 2e
+# SICP exercises
+Exercises from _Structure and Interpretation of Computer Programs, 2e_ by
+Harold Abelson and Gerald Jay Sussman with Julie Sussman
+
+This book has been [translated](http://sarabander.github.io/sicp/) into HTML5
+by Andres Raba.
+
+## Building
+Some of the solutions are written in ```latex```. To typeset them into PDF, run
+```make```.
