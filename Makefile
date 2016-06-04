@@ -4,11 +4,13 @@ VPATH := ch1
 
 .PHONY: all clean
 
-EXERCISES := 1.1
+SECTIONS := 1.1
 PDFDIR := pdf
-PDF := $(addprefix $(PDFDIR)/, $(addsuffix .pdf, $(EXERCISES)))
+PDF := $(addprefix $(PDFDIR)/s, $(addsuffix .pdf, $(SECTIONS)))
 
 all: $(PDF)
+
+$(PDFDIR)/s1.1.pdf: ex1.3.scm
 
 $(PDFDIR)/%.pdf: %.tex
 	$(PDFLATEX) -output-directory $(PDFDIR) $^
