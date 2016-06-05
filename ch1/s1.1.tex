@@ -109,4 +109,35 @@
 If $b$ is positive, the procedure returns \lstinline|(+ a b)|;
 otherwise, it returns \lstinline|(- a b)|. Thus, it returns $a + |b|$.
 
+\section{Exercise 1.5}
+\begin{quote}
+    Ben Bitdiddle has invented a test to determine whether the interpreter he is
+    faced with is using applicative-order evaluation or normal-order evaluation.
+    He defines the following two procedures:
+    \begin{lstlisting}
+(define (p) (p))
+
+(define (test x y) 
+  (if (= x 0) 
+      0 
+      y))
+	\end{lstlisting}
+	Then he evaluates the expression \lstinline|(test 0 (p))|. What behavior
+	will Ben observe with an interpreter that uses applicative-order evaluation?
+	What behavior will he observe with an interpreter that uses normal-order
+	evaluation? Explain your answer. (Assume that the evaluation rule for the
+	special form \lstinline|if| is the same whether the interpreter is using
+	normal or applicative order: The predicate expression is evaluated first,
+	and the result determines whether to evaluate the consequent or the
+	alternative expression.)
+\end{quote}
+
+Attempting to evaluate \lstinline|(p)| will recurse infinitely and thus never
+complete. An interpreter using normal-order evaluation will expand the test
+operator before evaluating the operands. Then, because $x$ is 0, it will
+evaluate the consequent, returning 0 as a result. Conversely, an interpreter
+using applicative order will attempt to evaluation the operands of test before
+substituting them for test's formal parameters. Consquently, it will attempt to
+evaluate \lstinline|(p)| and run forever without result.
+
 \end{document}
