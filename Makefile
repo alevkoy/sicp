@@ -10,7 +10,7 @@ PDF := $(addprefix $(PDFDIR)/s, $(addsuffix .pdf, $(SECTIONS)))
 
 all: $(PDF)
 
-$(PDFDIR)/s1.1.pdf: ex1.3.scm
+$(PDFDIR)/s1.1.pdf: ex1.3.scm ex1.7.scm
 
 $(PDFDIR)/%.pdf: %.tex
 	$(PDFLATEX) -output-directory $(PDFDIR) $^

@@ -106,8 +106,8 @@
     \end{lstlisting}
 \end{quote}
 
-If $b$ is positive, the procedure returns \lstinline|(+ a b)|;
-otherwise, it returns \lstinline|(- a b)|. Thus, it returns $a + |b|$.
+If $b$ is positive, the procedure returns \verb|(+ a b)|; otherwise, it returns
+\verb|(- a b)|. Thus, it returns $a + |b|$.
 
 \section{Exercise 1.5}
 \begin{quote}
@@ -122,22 +122,104 @@ otherwise, it returns \lstinline|(- a b)|. Thus, it returns $a + |b|$.
       0 
       y))
 	\end{lstlisting}
-	Then he evaluates the expression \lstinline|(test 0 (p))|. What behavior
+	Then he evaluates the expression \verb|(test 0 (p))|. What behavior
 	will Ben observe with an interpreter that uses applicative-order evaluation?
 	What behavior will he observe with an interpreter that uses normal-order
 	evaluation? Explain your answer. (Assume that the evaluation rule for the
-	special form \lstinline|if| is the same whether the interpreter is using
+	special form \verb|if| is the same whether the interpreter is using
 	normal or applicative order: The predicate expression is evaluated first,
 	and the result determines whether to evaluate the consequent or the
 	alternative expression.)
 \end{quote}
 
-Attempting to evaluate \lstinline|(p)| will recurse infinitely and thus never
+Attempting to evaluate \verb|(p)| will recurse infinitely and thus never
 complete. An interpreter using normal-order evaluation will expand the test
 operator before evaluating the operands. Then, because $x$ is 0, it will
 evaluate the consequent, returning 0 as a result. Conversely, an interpreter
 using applicative order will attempt to evaluation the operands of test before
 substituting them for test's formal parameters. Consquently, it will attempt to
-evaluate \lstinline|(p)| and run forever without result.
+evaluate \verb|(p)| and run forever without result.
+
+\section{Exercise 1.6}
+\begin{quote}
+    Alyssa P. Hacker doesn’t see why \verb|if| needs to be provided as a
+    special form.  “Why can’t I just define it as an ordinary procedure in
+    terms of \verb|cond|?” she asks. Alyssa’s friend Eva Lu Ator claims
+    this can indeed be done, and she defines a new version of \verb|if|:
+	\begin{lstlisting}
+(define (new-if predicate 
+                then-clause 
+                else-clause)
+  (cond (predicate then-clause)
+        (else else-clause)))
+	\end{lstlisting}
+	Eva demonstrates the program for Alyssa:
+	\begin{lstlisting}
+(new-if (= 2 3) 0 5)
+5
+
+(new-if (= 1 1) 0 5)
+0
+	\end{lstlisting}
+    Delighted, Alyssa uses \verb|new-if| to rewrite the square-root
+    program:
+	\begin{lstlisting}
+(define (sqrt-iter guess x)
+  (new-if (good-enough? guess x)
+          guess
+          (sqrt-iter (improve guess x) x)))
+	\end{lstlisting}
+	What happens when Alyssa attempts to use this to compute square roots?
+	Explain.
+\end{quote}
+
+Using \verb|new-if| to compute square roots will result in infinite
+recursion. The square root procedure refines the guess recursively until it is
+good enough, at which point it stops recursiing and returns. It achieves this
+by exploiting the property of the \verb|if| special form to evaluate only
+one of the the consequent or the alternative based on the predicate.
+\verb|new-if| is a procedure, so all of its arguments are evaluated before
+it is. This means that the recursive alternative case will always be evaluated,
+even when the predicate to return the nonrecursive consequent case has already
+been satisfied. Thus, using \verb|sqrt-iter| with \verb|new-if| will
+result in infinite recursion.
+
+\section{Exercise 1.7}
+\begin{quote}
+    The \verb|good-enough?| test used in computing square roots will not be
+    very effective for finding the square roots of very small numbers. Also, in
+    real computers, arithmetic operations are almost always performed with
+    limited precision. This makes our test inadequate for very large numbers.
+    Explain these statements, with examples showing how the test fails for
+    small and large numbers. An alternative strategy for implementing
+    \verb|good-enough?| is to watch how guess changes from one iteration to the
+    next and to stop when the change is a very small fraction of the guess.
+    Design a square-root procedure that uses this kind of end test. Does this
+    work better for small and large numbers?
+\end{quote}
+
+\verb|good-enough?| returns true when the square of the guess is within 0.001
+of the argument \verb|x|. This is inadequate for very small numbers, because
+the squares of the guesses will get below .001 (and consequently within .001 of
+\verb|x|) before they get reasonably close to the true square root of \verb|x|.
+For instance, \verb|(sqrt .001)| evaluates to approximately .04125, which
+squares to about .0017, almost twice .001. Inputs an order of magnitude lower
+than .001 or less produce results that square to approximately .001.
+
+For very large numbers, \verb|good-enough?| will never return true, so the
+algorithm will iterate forever. This is because the arithmetic operations
+involved in improving the guess can only produce results of a certain
+precision. When two very large numbers are as close to each other without being
+equal as the representation allows, their squares may differ by more than .001,
+meaning that the square root of a number between those two squares would not be
+representable by the interpreter to the satisfaction of \verb|good-enough?|. For
+instance, \verb|(sqrt 1234567890123456789012345678901234567890)| runs forever.
+
+The alternative test can be implemented as
+\lstinputlisting[firstline=4,lastline=5]{ch1/ex1.7.scm}
+
+This test causes \verb|sqrt| to stop recursing when the guess stops changing
+significantly, resulting in reasonable results for very large and very small
+inputs.
 
 \end{document}
