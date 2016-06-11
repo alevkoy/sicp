@@ -158,4 +158,18 @@ The second procedure generates an iterative process:
 
 \verb|(h n)| calculates $2^{2^2}\ldots$ ($n$ levels of exponentiation).
 
+\section{Exercise 1.11}
+\begin{quote}
+    A function $f$ is defined by the rule that $f(n) = n$ if $n < 3$ and
+    $f(n) = f(n - 1) + 2f(n - 2) + 3f(n - 3)$ if $n \geq 3$. Write a procedure
+    that computes $f$ by means of a recursive process. Write a procedure that
+    computes $f$ by means of an iterative process.
+\end{quote}
+
+Recursive process:
+\lstinputlisting[firstline=4,lastline=9]{ch1/ex1.11.scm}
+
+Iterative process:
+\lstinputlisting[firstline=12,lastline=25]{ch1/ex1.11.scm}
+
 \end{document}
