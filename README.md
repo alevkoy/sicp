@@ -7,4 +7,6 @@ by Andres Raba.
 
 ## Building
 Some of the solutions are written in LaTeX. To typeset them into PDF,
-run ```make```. You will need ```pdflatex``` and the ```listings``` package.
+run ```make```. You will need packages ```pdflatex```, ```amsmath```,
+```amsthm```, ```color```, ```IEEEtrantools```, ```listings```, and
+```tikz-qtree```.
