@@ -12,7 +12,7 @@ all: $(PDF)
 
 $(PDFDIR)/s1.1.pdf: ex1.3.scm ex1.7.scm ex1.8.scm
 
-$(PDFDIR)/s1.2.pdf: ex1.11.scm
+$(PDFDIR)/s1.2.pdf: ex1.11.scm ex1.12.scm
 
 # All documents use a common style package
 $(PDF): mystyle.sty
