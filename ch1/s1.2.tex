@@ -727,4 +727,40 @@ machine run in time proportional to the number of steps required for
 computation. As usual, the actual increase in runtime gets closer to the
 predicted increase as the size of the input increases.
 
+\section{Exercise 1.23}
+\begin{quote}
+    The smallest-divisor procedure shown at the start of this section does lots
+    of needless testing: After it checks to see if the number is divisible by 2
+    there is no point in checking to see if it is divisible by any larger even
+    numbers. This suggests that the values used for test-divisor should not be
+    2, 3, 4, 5, 6, \ldots, but rather 2, 3, 5, 7, 9, \ldots. To implement this
+    change, define a procedure next that returns 3 if its input is equal to 2
+    and otherwise returns its input plus 2. Modify the
+    \texttt{smallest-divisor} procedure to use \texttt{(next test-divisor)}
+    instead of \texttt{(+ test-divisor 1)}. With \texttt{timed-prime-test}
+    incorporating this modified version of \texttt{smallest-divisor}, run the
+    test for each of the 12 primes found in Exercise 1.22. Since this
+    modification halves the number of test steps, you should expect it to run
+    about twice as fast. Is this expectation confirmed? If not, what is the
+    observed ratio of the speeds of the two algorithms, and how do you explain
+    the fact that it is different from 2?
+\end{quote}
+
+\begin{tabular}{r|ccccc}
+    Prime order&\multicolumn{3}{c}{Primes/Times}&Multiple of old version\\
+    1,000,000,000&1,000,000,007&1,000,000,009&1,000,000,021\\
+    &.040 s&.030 s&.030 s&.50\\
+    10,000,000,000&10,000,000,019&10,000,000,033&10,000,000,061\\
+    &.10 s&.10 s&.10 s&.65\\
+    100,000,000,000&100,000,000,003&100,000,000,019&100,000,000,057\\
+    &.35 s&.30 s&.33 s&.62\\
+    1,000,000,000,000&1,000,000,000,039&1,000,000,000,061&1,000,000,000,063\\
+    &1.0 s&1.0 s&1.0 s&.63\\
+\end{tabular}
+
+We might expect a reduction in runtime of about 50\%, but we see a somewhere
+around 35\%. One explanation for this could be that we have replaced our
+unconditional add operation for each iteration with a conditional add that
+tests the value of its input.
+
 \end{document}
