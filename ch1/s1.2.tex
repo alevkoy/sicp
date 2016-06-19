@@ -794,11 +794,79 @@ have increased the number of iterations per input from 5 to 5000.
 
 I would expect each multiplication of the input by 10 to result in an
 incremental increase in runtime. If you squint, there is an increase of
-\emph{roughly} .06 s for each increase in the order of magnitude. If I test
-primes on the order of 100,000, such as 100,019, the runtime is approximately
-.23 s or about half of the runtimes for the primes on the order of
-100,000,000,000. This shows an approximate doubling of the runtime when the
-input is squared (order-of-magnitude approximation), consistent with a runtime
-complexity of $\Theta(\log{n})$.
+\emph{roughly} .06 seconds for each increase in the order of magnitude. If I
+test primes on the order of 100,000, such as 100,019, the runtime is
+approximately .23 seconds or about half of the runtimes for the primes on the
+order of 100,000,000,000. This shows an approximate doubling of the runtime
+when the input is squared (order-of-magnitude approximation), consistent with a
+runtime complexity of $\Theta(\log{n})$.
+
+\section{Exercise 1.25}
+\begin{quote}
+    Alyssa P. Hacker complains that we went to a lot of extra work in writing
+    \texttt{expmod}. After all, she says, since we already know how to compute
+    exponentials, we could have simply written
+    \begin{lstlisting}
+(define (expmod base exp m)
+  (remainder (fast-expt base exp) m))
+    \end{lstlisting}
+    Is she correct? Would this procedure serve as well for our fast prime
+    tester? Explain.
+\end{quote}
+
+When using the naive implementation of \texttt{expmod},
+\texttt{timed-prime-test} increases in runtime very rapidly as the size of the
+input increases. Even with only 5 Fermat test iterations, inputs on the order of
+10,000 take over 6 seconds, and inputs on the order of 100,000 did not complete
+after running for 1 minute. Since the input is being used as an exponent, the
+numbers upon which \texttt{expmod} is operating become very large if they are
+not cleverly reduced as in the optimzed implementation. This increases the
+amount of time that each basic arithmetic operation takes to the point that the
+total runtime becomes intolerable.
+
+\section{Exercise 1.26}
+\begin{quote}
+    Louis Reasoner is having great difficulty doing Exercise 1.24. His
+    \texttt{fast-prime?} test seems to run more slowly than his \texttt{prime?}
+    test. Louis calls his friend Eva Lu Ator over to help. When they examine
+    Louis's code, they find that he has rewritten the \texttt{expmod} procedure
+    to use an explicit multiplication, rather than calling \texttt{square}:
+    \begin{lstlisting}
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder
+          (* (expmod base (/ exp 2) m)
+             (expmod base (/ exp 2) m))
+          m))
+        (else
+         (remainder
+          (* base
+             (expmod base (- exp 1) m))
+          m))))
+    \end{lstlisting}
+``I don’t see what difference that could make,'' says Louis. ``I do.'' says Eva.
+``By writing the procedure like that, you have transformed the $\Theta(\log{n})$
+process into a $\Theta(n)$ process.'' Explain.
+\end{quote}
+
+The \texttt{expmod} that uses \texttt{square} is a recursive process in which
+the recursion tree does not branch and is $\Theta(\log{n})$ levels deep. At each
+level, a constant amount of work is done, so the runtime complexity is
+logarithmic.
+
+In Louis' \texttt{expmod}, the tree is the same depth, but now it bifurcates at
+every level. The total number of recursive calls (and the runtime) is thus
+$\Theta(2^{\log{n}})=\Theta(n)$.
+
+\section{Exercise 1.27}
+\begin{quote}
+	Demonstrate that the Carmichael numbers listed in Footnote 47 really do
+	fool the Fermat test. That is, write a procedure that takes an integer n and
+	tests whether $a^n$ is congruent to $a$ modulo $n$ for every $a<n$, and try
+	your procedure on the given Carmichael numbers.
+\end{quote}
+
+\lstinputlisting[firstline=3,lastline=23]{ch1/ex1.27.scm}
 
 \end{document}
