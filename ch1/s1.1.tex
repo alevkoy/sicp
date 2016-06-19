@@ -116,9 +116,9 @@ If $b$ is positive, the procedure returns \verb|(+ a b)|; otherwise, it returns
     \begin{lstlisting}
 (define (p) (p))
 
-(define (test x y) 
-  (if (= x 0) 
-      0 
+(define (test x y)
+  (if (= x 0)
+      0
       y))
 	\end{lstlisting}
 	Then he evaluates the expression \verb|(test 0 (p))|. What behavior
@@ -146,8 +146,8 @@ evaluate \verb|(p)| and run forever without result.
     terms of \verb|cond|?” she asks. Alyssa’s friend Eva Lu Ator claims
     this can indeed be done, and she defines a new version of \verb|if|:
 	\begin{lstlisting}
-(define (new-if predicate 
-                then-clause 
+(define (new-if predicate
+                then-clause
                 else-clause)
   (cond (predicate then-clause)
         (else else-clause)))
