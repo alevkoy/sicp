@@ -763,4 +763,42 @@ around 35\%. One explanation for this could be that we have replaced our
 unconditional add operation for each iteration with a conditional add that
 tests the value of its input.
 
+\section{Exercise 1.24}
+\begin{quote}
+    Modify the \texttt{timed-prime-test} procedure of Exercise 1.22 to use
+    \texttt{fast-prime?} (the Fermat method), and test each of the 12 primes
+    you found in that exercise. Since the Fermat test has $\Theta(\log{n})$
+    growth, how would you expect the time to test primes near 1,000,000 to
+    compare with the time needed to test primes near 1000? Do your data bear
+    this out? Can you explain any discrepancy you find?
+\end{quote}
+
+\lstinputlisting[firstline=27,lastline=39]{ch1/ex1.24.scm}
+
+Due to the increased efficiency of the Fermat method, all of the previously
+identified primes are now identified in an amount of time below the granularity
+of the \texttt{runtime} procedure. In order to get comparable time results, I
+have increased the number of iterations per input from 5 to 5000.
+
+\begin{tabular}{r|cccc}
+    Prime order&\multicolumn{3}{c}{Primes/Times}\\
+    1,000,000,000&1,000,000,007&1,000,000,009&1,000,000,021\\
+    &.45 s&.44 s&.44 s\\
+    10,000,000,000&10,000,000,019&10,000,000,033&10,000,000,061\\
+    &.53 s&.51 s&.54 s\\
+    100,000,000,000&100,000,000,003&100,000,000,019&100,000,000,057\\
+    &.56 s&.58 s&.58 s\\
+    1,000,000,000,000&1,000,000,000,039&1,000,000,000,061&1,000,000,000,063\\
+    &.56 s&.59 s&.61 s\\
+\end{tabular}
+
+I would expect each multiplication of the input by 10 to result in an
+incremental increase in runtime. If you squint, there is an increase of
+\emph{roughly} .06 s for each increase in the order of magnitude. If I test
+primes on the order of 100,000, such as 100,019, the runtime is approximately
+.23 s or about half of the runtimes for the primes on the order of
+100,000,000,000. This shows an approximate doubling of the runtime when the
+input is squared (order-of-magnitude approximation), consistent with a runtime
+complexity of $\Theta(\log{n})$.
+
 \end{document}
