@@ -2,6 +2,11 @@
 Solutions to problems from _Structure and Interpretation of Computer Programs,
 2e_ by Harold Abelson and Gerald Jay Sussman with Julie Sussman.
 
+I have run the programs contained herein using
+[MIT Scheme](https://www.gnu.org/software/mit-scheme/). I have also made some
+use of the very convenient [repl.it](https://repl.it/languages). Not all
+programs have been tested on the latter interpreter.
+
 ## Building
 Some of the solutions are written in LaTeX. To typeset them into PDF, run
 `make`. You will need the packages `pdflatex`, `amsmath`, `amsthm`, `color`,
