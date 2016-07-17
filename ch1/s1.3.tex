@@ -85,11 +85,11 @@ when used in \texttt{simpson}.
 \end{quote}
 
 \subsection{Recursive process}
-\lstinputlisting[firstline=3,lastline=10]{ch1/ex1.31.scm}
+\lstinputlisting[firstline=4,lastline=11]{ch1/ex1.31.scm}
 
-\lstinputlisting[firstline=12,lastline=23]{ch1/ex1.31.scm}
+\lstinputlisting[firstline=13,lastline=24]{ch1/ex1.31.scm}
 
-\lstinputlisting[firstline=30,lastline=41]{ch1/ex1.31.scm}
+\lstinputlisting[firstline=31,lastline=42]{ch1/ex1.31.scm}
 This procedure counts terms in a way such that there are two terms of this
 procedure for every one term of the canonical formulation of the Wallis Formula.
 I suppose my procedure is half as precise as one using the canonical enumeration
@@ -97,6 +97,88 @@ of terms. No matter: I also do half as much work per term, so I can just use
 twice as many terms.
 
 \subsection{Iterative process}
-\lstinputlisting[firstline=50,lastline=60]{ch1/ex1.31.scm}
+\lstinputlisting[firstline=52,lastline=62]{ch1/ex1.31.scm}
+
+\section{Exercise 1.32}
+\begin{quote}
+    \begin{enumerate}
+        \item Show that \texttt{sum} and \texttt{product} (Exercise 1.31) are
+            both special cases of a still more general notion called
+            \texttt{accumulate} that combines a collection of terms, using some
+            general accumulation function:
+            \begin{lstlisting}
+(accumulate
+ combiner null-value term a next b)
+            \end{lstlisting}
+            \texttt{Accumulate} takes as arguments the same term and range
+            specifications as \texttt{sum} and \texttt{product}, together with
+            a \texttt{combiner} procedure (of two arguments) that specifies how
+            the current term is to be combined with the accumulation of the
+            preceding terms and a \texttt{null-value} that specifies what base
+            value to use when the terms run out. Write \texttt{accumulate} and
+            show how \texttt{sum} and \texttt{product} can both be defined as
+            simple calls to \texttt{accumulate}.
+        \item If your \texttt{accumulate} procedure generates a recursive
+            process, write one that generates an iterative process. If it
+            generates an iterative process, write one that generates a
+            recursive process.
+    \end{enumerate}
+\end{quote}
+
+\subsection{Recursive process}
+\lstinputlisting[firstline=4,lastline=13]{ch1/ex1.32.scm}
+
+\subsection{Iterative process}
+\lstinputlisting[firstline=43,lastline=54]{ch1/ex1.32.scm}
+
+\section{Exercise 1.33}
+\begin{quote}
+    You can obtain an even more general version of \texttt{accumulate}
+    (Exercise 1.32) by introducing the notion of a filter on the terms to be
+    combined. That is, combine only those terms derived from values in the
+    range that satisfy a specified condition. The resulting
+    \texttt{filtered-accumulate} abstraction takes the same arguments as
+    \texttt{accumulate}, together with an additional predicate of one argument
+    that specifies the filter. Write \texttt{filtered-accumulate} as a
+    procedure. Show how to express the following using
+    \texttt{filtered-accumulate}:
+    \begin{enumerate}
+        \item the sum of the squares of the prime numbers in the interval $a$
+            to $b$ (assuming that you have a \texttt{prime?} predicate already
+            written)
+        \item the product of all the positive integers less than $n$ that are
+            relatively prime to $n$ (i.e., all positive integers $i<n$ such that
+            $\textrm{GCD}(i,n)=1)$.
+    \end{enumerate}
+\end{quote}
+
+\lstinputlisting[firstline=4,lastline=21]{ch1/ex1.33.scm}
+
+\subsection{Sum of squares of prime numbers in interval $a$ to $b$}
+\lstinputlisting[firstline=44,lastline=55]{ch1/ex1.33.scm}
+
+\subsection{Product of positive integers less than and relatively prime to $n$}
+\lstinputlisting[firstline=57,lastline=70]{ch1/ex1.33.scm}
+
+\section{Exercise 1.34}
+\begin{quote}
+    Suppose we define the procedure
+    \begin{lstlisting}
+(define (f g) (g 2))
+    \end{lstlisting}
+    Then we have
+    \begin{lstlisting}
+(f square)
+4
+(f (lambda (z) (* z (+ z 1))))
+6
+    \end{lstlisting}
+    What happens if we (perversely) ask the interpreter to evaluate the
+    combination \texttt{(f f)}? Explain.
+\end{quote}
+
+\texttt{(f f)} evaluates to \texttt{(f 2)}, which in turn evaluates to
+\texttt{(2 2)}. \texttt{2} isn't the name of a procedure, so this produces an
+interpreter error.
 
 \end{document}
