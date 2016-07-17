@@ -1,7 +1,7 @@
 ; Exercise 1.28
 ; fast-prime? and timed-prime-test adapted from SICP.
-; timed-prime-test has been modified to print less output and to use fast-prime?.
-; fast-prime? has been modified to use rm-test.
+; timed-prime-test has been modified to print less output and to use
+; fast-prime?. fast-prime? has been modified to use rm-test.
 ; expmod has been modified to identify non-trivial roots of 1 modulo n and
 ; return immediately if it finds any.
 ; timed-prime-test has been modified to perform at most enough tests to ensure

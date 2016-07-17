@@ -1,5 +1,6 @@
 ; Exercise 1.31
 
+; Recursive process
 (define (product term a next b)
     (if (> a b)
         1
@@ -47,6 +48,7 @@
 (display "pi ")
 (display (pi 200))
 
+; Iterative process
 (define (product term a next b)
     (define (iterate term a next b result)
         (if (> a b)
