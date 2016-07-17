@@ -42,4 +42,61 @@ thus more accurate than \texttt{integral}. In fact, it is spookily accurate. It
 seems to produce results using only 2 intervals that are as accurate as
 \texttt{integral} with 100 intervals.
 
+\section{Exercise 1.30}
+\begin{quote}
+    The \texttt{sum} procedure above generates a linear recursion. The
+    procedure can be rewritten so that the sum is performed iteratively. Show
+    how to do this by filling in the missing expressions in the following
+    definition:
+    \begin{lstlisting}
+(define (sum term a next b)
+  (define (iter a result)
+    (if <??>
+        <??>
+        (iter <??> <??>)))
+  (iter <??> <??>))
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=5,lastline=12]{ch1/ex1.30.scm}
+
+This implementation produces the same results as the recursive implementation
+when used in \texttt{simpson}.
+
+\section{Exercise 1.31}
+\begin{quote}
+    \begin{enumerate}
+        \item The \texttt{sum} procedure is only the simplest of a vast number
+            of similar abstractions that can be captured as higher-order
+            procedures. Write an analogous procedure called \texttt{product}
+            that returns the product of the values of a function at points over
+            a given range. Show how to define \texttt{factorial} in terms of
+            \texttt{product}. Also use \texttt{product} to compute
+            approximations to $\pi$ using the formula
+            \begin{equation*}
+                \frac{\pi}{4}=
+                \frac{2\cdot4\cdot4\cdot6\cdot6\cdot8\cdot\cdots}
+                     {3\cdot3\cdot5\cdot5\cdot7\cdot7\cdot\cdots}.
+            \end{equation*}
+        \item If your product procedure generates a recursive process, write
+            one that generates an iterative process. If it generates an
+            iterative process, write one that generates a recursive process.
+    \end{enumerate}
+\end{quote}
+
+\subsection{Recursive process}
+\lstinputlisting[firstline=3,lastline=10]{ch1/ex1.31.scm}
+
+\lstinputlisting[firstline=12,lastline=23]{ch1/ex1.31.scm}
+
+\lstinputlisting[firstline=30,lastline=41]{ch1/ex1.31.scm}
+This procedure counts terms in a way such that there are two terms of this
+procedure for every one term of the canonical formulation of the Wallis Formula.
+I suppose my procedure is half as precise as one using the canonical enumeration
+of terms. No matter: I also do half as much work per term, so I can just use
+twice as many terms.
+
+\subsection{Iterative process}
+\lstinputlisting[firstline=50,lastline=60]{ch1/ex1.31.scm}
+
 \end{document}
