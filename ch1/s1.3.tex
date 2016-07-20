@@ -190,4 +190,67 @@ interpreter error.
 
 \lstinputlisting[firstline=19,lastline=22]{ch1/ex1.35.scm}
 
+\section{Exercise 1.36}
+\begin{quote}
+    Modify \texttt{fixed-point} so that it prints the sequence of
+    approximations it generates, using the \texttt{newline} and
+    \texttt{display} primitives shown in Exercise 1.22.  Then find a solution
+    to $x^x=1000$ by finding a fixed point of $x\rightarrow\log{1000}/\log{x}$.
+    (Use Scheme’s primitive \texttt{log} procedure, which computes natural
+    logarithms.) Compare the number of steps this takes with and without
+    average damping. (Note that you cannot start fixed-point with a guess of 1,
+    as this would cause division by $\log{1}=0$.)
+\end{quote}
+
+\lstinputlisting[firstline=6,lastline=23]{ch1/ex1.36.scm}
+Without average damping, it takes 34 guesses to get to 4 decimal places of
+accuracy.
+
+\lstinputlisting[firstline=32,lastline=35]{ch1/ex1.36.scm}
+With average damping, it takes 11 guesses.
+
+\section{Exercise 1.37}
+\begin{quote}
+    \begin{enumerate}
+        \item An infinite continued fraction is an expression of the form
+            \begin{equation*}
+                f=\frac{N_1}{D_1+\frac{N_2}{D_2+\frac{N_3}{D_3+\ldots}}}.
+            \end{equation*}
+            As an example, one can show that the infinite continued fraction
+            expansion with the $N_i$ and the $D_i$ all equal to 1 produces
+            $1/\phi$, where $\phi$ is the golden ratio (described in 1.2.2).
+            One way to approximate an infinite continued fraction is to
+            truncate the expansion after a given number of terms. Such a
+            truncation -- a so-called finite continued fraction
+            \emph{k-term finite continued fraction} -- has the form
+            \begin{equation*}
+                f=\frac{N_1}{D_1+\frac{N_2}{\ddots+\frac{N_k}{D_k}}}.
+            \end{equation*}
+            Suppose that \texttt{n} and \texttt{d} are procedures of one
+            argument (the term index $i$) that return the $N_i$ and $D_i$ of
+            the terms of the continued fraction. Define a procedure
+            \texttt{cont-frac} such that evaluating \texttt{(cont-frac n d k)}
+            computes the value of the $k$-term finite continued fraction. Check
+            your procedure by approximating $1/\phi$ using
+            \begin{lstlisting}
+(cont-frac (lambda (i) 1.0)
+           (lambda (i) 1.0)
+           k)
+            \end{lstlisting}
+            for successive values of \texttt{k}. How large must you make
+            \texttt{k} in order to get an approximation that is accurate to 4
+            decimal places?
+        \item If your \texttt{cont-frac} procedure generates a recursive
+            process, write one that generates an iterative process. If it
+            generates an iterative process, write one that generates a
+            recursive process.
+    \end{enumerate}
+\end{quote}
+
+\subsection{Iterative}
+\lstinputlisting[firstline=4,lastline=17]{ch1/ex1.37.scm}
+
+\subsection{Recursive}
+\lstinputlisting[firstline=23,lastline=31]{ch1/ex1.37.scm}
+
 \end{document}
