@@ -253,4 +253,31 @@ With average damping, it takes 11 guesses.
 \subsection{Recursive}
 \lstinputlisting[firstline=23,lastline=31]{ch1/ex1.37.scm}
 
+\section{Exercise 1.38}
+\begin{quote}
+    In 1737, the Swiss mathematician Leonhard Euler published a memoir
+    \textit{De Fractionibus Continuis}, which included a continued fraction
+    expansion for $e−2$, where $e$ is the base of the natural logarithms. In
+    this fraction, the $N_i$ are all 1, and the $D_i$ are successively 1, 2, 1,
+    1, 4, 1, 1, 6, 1, 1, 8, \ldots. Write a program that uses your
+    \texttt{cont-frac} procedure from Exercise 1.37 to approximate $e$, based
+    on Euler’s expansion.
+\end{quote}
+
+\lstinputlisting[firstline=13,lastline=20]{ch1/ex1.38.scm}
+
+\section{Exercise 1.39}
+\begin{quote}
+    A continued fraction representation of the tangent function was published
+    in 1770 by the German mathematician J.H. Lambert:
+    \begin{equation*}
+        \tan{x}= \frac{x}{1-\frac{x^2}{3-\frac{x^2}{5-\ldots}}},
+    \end{equation*}
+    where $x$ is in radians. Define a procedure \texttt{(tan-cf x k)} that
+    computes an approximation to the tangent function based on Lambert’s
+    formula. $k$ specifies the number of terms to compute, as in Exercise 1.37.
+\end{quote}
+
+\lstinputlisting[firstline=13,lastline=19]{ch1/ex1.39.scm}
+
 \end{document}
