@@ -292,4 +292,21 @@ With average damping, it takes 11 guesses.
 
 \lstinputlisting[firstline=42,lastline=45]{ch1/ex1.40.scm}
 
+\section{Exercise 1.41}
+\begin{quote}
+    Define a procedure \texttt{double} that takes a procedure of one argument
+    as argument and returns a procedure that applies the original procedure
+    twice. For example, if \texttt{inc} is a procedure that adds 1 to its
+    argument, then \texttt{(double inc)} should be a procedure that adds 2.
+    What value is returned by
+    \begin{lstlisting}
+(((double (double double)) inc) 5)
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=3, lastline=4]{ch1/ex1.41.scm}
+
+The value of \texttt{(((double (double double)) inc) 5)} is 21. It results in
+a procedure that applies \texttt{inc} 16 times being applied to 5.
+
 \end{document}
