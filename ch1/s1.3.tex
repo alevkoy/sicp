@@ -309,4 +309,39 @@ With average damping, it takes 11 guesses.
 The value of \texttt{(((double (double double)) inc) 5)} is 21. It results in
 a procedure that applies \texttt{inc} 16 times being applied to 5.
 
+\section{Exercise 1.42}
+\begin{quote}
+    Let $f$ and $g$ be two one-argument functions. The composition $f$ after
+    $g$ is defined to be the function $x\rightarrow f(g(x))$. Define a
+    procedure \texttt{compose} that implements composition. For example, if
+    \texttt{inc} is a procedure that adds 1 to its argument,
+    \begin{lstlisting}
+((compose square inc) 6)
+49
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=3,lastline=4]{ch1/ex1.42.scm}
+
+\section{Exercise 1.43}
+\begin{quote}
+    If $f$ is a numerical function and $n$ is a positive integer, then we can
+    form the $n^{\textrm{th}}$ repeated application of $f$, which is defined to
+    be the function whose value at $x$ is $f(f(\ldots(f(x))\ldots))$. For
+    example, if $f$ is the function $x\rightarrow x+1$, then the
+    $n^{\textrm{th}}$ repeated application of $f$ is the function $x\rightarrow
+    x+n$. If $f$ is the operation of squaring a number, then the
+    $n^{\textrm{th}}$ repeated application of $f$ is the function that raises
+    its argument to the $2^n$-th power. Write a procedure that takes as inputs
+    a procedure that computes $f$ and a positive integer $n$ and returns the
+    procedure that computes the $n^{\textrm{th}}$ repeated application of $f$.
+    Your procedure should be able to be used as follows:
+    \begin{lstlisting}
+((repeated square 2) 5)
+625
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=6,lastline=15]{ch1/ex1.43.scm}
+
 \end{document}
