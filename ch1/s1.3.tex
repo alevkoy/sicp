@@ -1,6 +1,6 @@
 \documentclass{article}
 \author{Abraham Levkoy}
-\title{SICP exercises, section 1.2}
+\title{SICP exercises, section 1.3}
 
 \usepackage{mystyle}
 
@@ -343,5 +343,42 @@ a procedure that applies \texttt{inc} 16 times being applied to 5.
 \end{quote}
 
 \lstinputlisting[firstline=6,lastline=15]{ch1/ex1.43.scm}
+
+\section{Exercise 1.44}
+\begin{quote}
+    The idea of \emph{smoothing} a function is an important concept in signal
+    processing. If $f$ is a function and $dx$ is some small number, then the
+    smoothed version of $f$ is the function whose value at a point $x$ is the
+    average of $f(x-dx)$, $f(x)$, and $f(x+dx)$. Write a procedure
+    \texttt{smooth} that takes as input a procedure that computes $f$ and
+    returns a procedure that computes the smoothed $f$. It is sometimes valuable
+    to repeatedly smooth a function (that is, smooth the smoothed function, and
+    so on) to obtain the \emph{n-fold smoothed function}. Show how to generate
+    the n-fold smoothed function of any given function using \texttt{smooth} and
+    \texttt{repeated} from Exercise 1.43.
+\end{quote}
+
+\lstinputlisting[firstline=15,lastline=23]{ch1/ex1.44.scm}
+
+\section{Exercise 1.45}
+\begin{quote}
+    We saw in 1.3.3 that attempting to compute square roots by naively finding
+    a fixed point of $y\rightarrow x/y$ does not converge, and that this can be
+    fixed by average damping. The same method works for finding cube roots as
+    fixed points of the average-damped $y\rightarrow x/y^2$. Unfortunately, the
+    process does not work for fourth roots -- a single average damp is not
+    enough to make a fixed-point search for $y\rightarrow x/y^3$ converge. On
+    the other hand, if we average damp twice (i.e., use the average damp of the
+    average damp of $y\rightarrow x/y^3$) the fixed-point search does converge.
+    Do some experiments to determine how many average damps are required to
+    compute $n^{\textrm{th}}$ roots as a fixed-point search based upon repeated
+    average damping of $y\rightarrow x/y^{n-1}$.  Use this to implement a
+    simple procedure for computing $n^{\textrm{th}}$ roots using
+    \texttt{fixed-point}, \texttt{average-damp}, and the \texttt{repeated}
+    procedure of Exercise 1.43.  Assume that any arithmetic operations you need
+    are available as primitives.
+\end{quote}
+
+\lstinputlisting[firstline=41,lastline=52]{ch1/ex1.45.scm}
 
 \end{document}
