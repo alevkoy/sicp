@@ -381,4 +381,30 @@ a procedure that applies \texttt{inc} 16 times being applied to 5.
 
 \lstinputlisting[firstline=41,lastline=52]{ch1/ex1.45.scm}
 
+\section{Exercise 1.46}
+\begin{quote}
+    Several of the numerical methods described in this chapter are instances of
+    an extremely general computational strategy known as \emph{iterative
+    improvement}.  Iterative improvement says that, to compute something, we
+    start with an initial guess for the answer, test if the guess is good
+    enough, and otherwise improve the guess and continue the process using the
+    improved guess as the new guess. Write a procedure
+    \texttt{iterative-improve} that takes two procedures as arguments: a method
+    for telling whether a guess is good enough and a method for improving a
+    guess. \texttt{Iterative-improve} should return as its value a procedure
+    that takes a guess as argument and keeps improving the guess until it is
+    good enough. Rewrite the \texttt{sqrt} procedure of 1.1.7 and the
+    \texttt{fixed-point} procedure of 1.3.3 in terms of
+    \texttt{iterative-improve}.
+\end{quote}
+
+\lstinputlisting[firstline=11,lastline=39]{ch1/ex1.46.scm}
+
+It would have been a bit more elegant to define \texttt{iterative-improve} in
+terms of a named lambda using the \texttt{rec} keyword, but that hasn't been
+covered yet. I also would have preferred to just using \texttt{close-enough?}
+for the \texttt{good-enough?} argument and define \texttt{iterative-improve} to
+pass 2 arguments to \texttt{good-enough?}. However, the problem specifies a
+one-argument interface.
+
 \end{document}
