@@ -46,4 +46,27 @@
 
 \lstinputlisting[firstline=27,lastline=53]{ch2/ex2.2.scm}
 
+\section{Exercise 2.3}
+\begin{quote}
+    Implement a representation for rectangles in a plane. (Hint: You may want
+    to make use of Exercise 2.2.) In terms of your constructors and selectors,
+    create procedures that compute the perimeter and the area of a given
+    rectangle. Now implement a different representation for rectangles. Can you
+    design your system with suitable abstraction barriers, so that the same
+    perimeter and area procedures will work using either representation?
+\end{quote}
+
+The first implementation represents a rectangle as 3 points. The fourth point
+could be derived if it were needed. The \texttt{area} and \texttt{perimeter}
+functions are implemented in terms of helpers \texttt{height-rectangle} and
+\texttt{width-rectangle}, which are in turn implemented in terms of the point
+selectors for this implementation.
+% Still working in ex2.2.scm to avoid copying solution of exercise 2.2
+\lstinputlisting[firstline=64,lastline=100]{ch2/ex2.2.scm}
+
+The second implementation represents a rectangle as 2 segments, which are
+assumed to share a point. This requires new selectors and new implementations of
+\texttt{width-rectangle} and \texttt{height-rectangle}, but \texttt{area} and
+\texttt{perimeter} don't need to change.
+\lstinputlisting[firstline=120,lastline=133]{ch2/ex2.2.scm}
 \end{document}
