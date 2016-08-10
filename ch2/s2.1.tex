@@ -69,4 +69,83 @@ assumed to share a point. This requires new selectors and new implementations of
 \texttt{width-rectangle} and \texttt{height-rectangle}, but \texttt{area} and
 \texttt{perimeter} don't need to change.
 \lstinputlisting[firstline=120,lastline=133]{ch2/ex2.2.scm}
+
+\section{Exercise 2.4}
+\begin{quote}
+    Here is an alternative procedural representation of pairs. For this
+    representation, verify that \texttt{(car (cons x y))} yields \texttt{x} for
+    any objects \texttt{x} and \texttt{y}.
+    \begin{lstlisting}
+(define (cons x y)
+  (lambda (m) (m x y)))
+
+(define (car z)
+  (z (lambda (p q) p)))
+    \end{lstlisting}
+    What is the corresponding definition of \texttt{cdr}? (Hint: To verify that
+    this works, make use of the substitution model of 1.1.5.)
+\end{quote}
+
+\begin{lstlisting}
+(car (cons x y))
+(car (lambda (m) (m x y)))
+((lambda (m) (m x y)) (lambda (p q) p))
+((lambda (p q) p) x y)
+x
+\end{lstlisting}
+\texttt{car} produces the expected result. The corresponding definition of
+\texttt{cdr} is
+\lstinputlisting[firstline=10,lastline=11]{ch2/ex2.4.scm}
+
+\section{Exercise 2.5}
+\begin{quote}
+    Show that we can represent pairs of nonnegative integers using only numbers
+    and arithmetic operations if we represent the pair $a$ and $b$ as the
+    integer that is the product $2^a3^b$. Give the corresponding definitions of
+    the procedures \texttt{cons}, \texttt{car}, and \texttt{cdr}.
+\end{quote}
+
+2 and 3 are coprime, so $a$ and $b$ can be found by finding the umber of times
+that 2 and 3, respectively, divide evenly into the whole number.
+\lstinputlisting[firstline=3,lastline=16]{ch2/ex2.5.scm}
+
+\section{Exercise 2.6}
+\begin{quote}
+    In case representing pairs as procedures wasn't mind-boggling enough,
+    consider that, in a language that can manipulate procedures, we can get by
+    without numbers (at least insofar as nonnegative integers are concerned) by
+    implementing 0 and the operation of adding 1 as
+    \begin{lstlisting}
+(define zero (lambda (f) (lambda (x) x)))
+
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+    \end{lstlisting}
+    This representation is known as Church numerals, after its inventor, Alonzo
+    Church, the logician who invented the $\lambda$-calculus.
+
+    Define \texttt{one} and \texttt{two} directly (not in terms of
+    \texttt{zero} and \texttt{add-1}). (Hint: Use substitution to evaluate
+    \texttt{(add-1 zero)}). Give a direct definition of the addition procedure
+    \texttt{+} (not in terms of repeated application of \texttt{add-1}).
+\end{quote}
+
+A Church numeral represents a number as a procedure that applies f to its input
+as many times as the number.
+\begin{lstlisting}
+(add-1 zero)
+(lambda (f) (lambda (x) (f ((zero f) x))))
+(lambda (f) (lambda (x) (f (((lambda (f) (lambda (x) x)) f) x))))
+(lambda (f) (lambda (x) (f (((lambda (f) f)) x))))
+(lambda (f) (lambda (x) (f x)))
+\end{lstlisting}
+\texttt{one} is the procedure of \texttt{f} that returns a procedure of
+\texttt{x} that applies \texttt{f} to \texttt{x} once. Similarly, \texttt{two}
+is a procedure that applies \texttt{f} twice.
+\lstinputlisting[firstline=15,lastline=16]{ch2/ex2.6.scm}
+
+Addition is defined below. I did not redefine \texttt{+} to avoid breaking any
+built-in procedures or making life generally uncomfortable for myself.
+\lstinputlisting[firstline=19,lastline=26]{ch2/ex2.6.scm}
+
 \end{document}
