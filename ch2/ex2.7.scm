@@ -91,19 +91,20 @@
 
 ; Exercise 2.11
 
-; Populate a list based on whether each bound in 2 intervals is nonnegative.
-(define (intervals2signs x y)
-    (list (>= (lower-bound x) 0)
-          (>= (upper-bound x) 0)
-          (>= (lower-bound y) 0)
-          (>= (upper-bound y) 0)))
-
 ; Multiply two intervals while avoiding unnecessary multiplications. The
 ; algorithm differs depending on whether each of the bounds is nonnegative.
 ; There are 9 possible combinations. If a bound is 0, there might be
 ; multiple possible ways to get the product, but we only need to try the
 ; first one that works.
 (define (mul-interval x y)
+    ; Populate a list based on whether each bound in 2 intervals is
+    ; nonnegative.
+    (define (intervals2signs x y)
+        (list (>= (lower-bound x) 0)
+              (>= (upper-bound x) 0)
+              (>= (lower-bound y) 0)
+              (>= (upper-bound y) 0)))
+
     (let ((signs (intervals2signs x y))
           (mi make-interval)
           (lbx (lower-bound x))
@@ -196,3 +197,29 @@
 (test-mul zeropos negzero (make-interval -6 0))
 (test-mul negzero zeropos (make-interval -6 0))
 (test-mul negzero negzero (make-interval 0 4))
+
+; Exercise 2.12
+; center adapted from SICP.
+
+(define (center i)
+    (/ (+ (lower-bound i)
+		  (upper-bound i))
+	   2))
+
+(define (make-center-percent c p)
+    (let ((w (* c p)))
+        (make-interval (- c w) (+ c w))))
+
+(define (percent i)
+    (let ((c (center i))
+          (ub (upper-bound i)))
+        (/ (- ub c)
+           c)))
+
+(define e (make-center-percent 100 .05))
+(newline)
+(print-interval e)
+(display ": center = ")
+(display (center e))
+(display ", percent = ")
+(display (percent e))

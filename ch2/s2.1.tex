@@ -256,6 +256,57 @@ $width_{a \div b}$ is not just a function of $width_a$ and $width_b$.
     Rewrite this procedure using Ben’s suggestion.
 \end{quote}
 
-\lstinputlisting[firstline=94,lastline=142]{ch2/ex2.7.scm}
+\lstinputlisting[firstline=94,lastline=143]{ch2/ex2.7.scm}
+
+\section{Exericise 2.12}
+\begin{quote}
+    Define a constructor \texttt{make-center-percent} that takes a center and a
+    percentage tolerance and produces the desired interval. You must also
+    define a selector \texttt{percent} that produces the percentage tolerance
+    for a given interval. The \texttt{center} selector is the same as the one
+    shown above.
+\end{quote}
+
+\lstinputlisting[firstline=204,lastline=217]{ch2/ex2.7.scm}
+
+\section{Exercise 2.13}
+\begin{quote}
+    Show that under the assumption of small percentage tolerances there is a
+    simple formula for the approximate percentage tolerance of the product of
+    two intervals in terms of the tolerances of the factors. You may simplify
+    the problem by assuming that all numbers are positive.
+\end{quote}
+
+\begin{proof}
+    Let $i_1 = [a,b], i_2 = [c,d]$. Since all bounds are positive, we may use
+    \begin{equation*}
+        i_3 = i_1 * i_2 = [ac,bd]
+    \end{equation*}
+    for multiplication.
+
+    Let $p_1$, $p_2$, and $p_3$ be the percentage tolerances of $i_1$, $i_2$,
+    and $i_3$, respectively.
+    \begin{IEEEeqnarray*}{rrClCl}
+        \Rightarrow & p_1 &=& \frac{(b-a)/2}{(b+a)/2} & = & \frac{b-a}{b+a} \\
+                    & p_2 &=&&& \frac{d-c}{d+c} \\
+                    & p_3 &=&&& \frac{bd-ac}{bd+ac} \\
+    \end{IEEEeqnarray*}
+    \begin{IEEEeqnarray*}{rCl}
+        p_1 + p_2 &=& \frac{b-a}{b+a} + \frac{d-c}{d+c} \\
+                  &=& \frac{(b-a)(d+c) + (d-c)(b+a)}{(b+a)(d+c)} \\
+                  &=& \frac{bd+bc-ad-ac+bd+ad-bc-ac}{bd+bc+ad+ac} \\
+                  &=& \frac{2(bd-ac)}{bd+ac+bc+ad} \\
+    \end{IEEEeqnarray*}
+
+    It is given that the percentage tolerances are small. Among other
+    things, this means that $c \approx d$.
+    \begin{IEEEeqnarray*}{rCl}
+        \Rightarrow p_1 + p_2 &\approx& \frac{2(bd-ac)}{bd+ac+bd+ac} \\
+        &=& \frac{2(bd-ac)}{2(bd+ac)} \\
+        &=& \frac{bd-ac}{bd+ac} \\
+        &=& p_3 \\
+        \Rightarrow p_3 &\approx& p_1 + p_2 \\
+    \end{IEEEeqnarray*}
+\end{proof}
 
 \end{document}
