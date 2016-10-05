@@ -148,4 +148,114 @@ Addition is defined below. I did not redefine \texttt{+} to avoid breaking any
 built-in procedures or making life generally uncomfortable for myself.
 \lstinputlisting[firstline=19,lastline=26]{ch2/ex2.6.scm}
 
+\section{Exercise 2.7}
+\begin{quote}
+    Alyssa's program is incomplete because she has not specified the
+    implementation of the interval abstraction. Here is a definition of the
+    interval constructor:
+    \begin{lstlisting}
+(define (make-interval a b) (cons a b))
+    \end{lstlisting}
+    Define selectors \texttt{upper-bound} and \texttt{lower-bound} to complete
+    the implementation.
+\end{quote}
+
+\lstinputlisting[firstline=30,lastline=34]{ch2/ex2.7.scm}
+Ordering the lower bound before the upper bound is concistent with the usage of
+\texttt{lower-bound} and \texttt{upper-bound} in \texttt{add-interval}, as well
+as the other provided interval methods.
+
+\section{Exercise 2.8}
+\begin{quote}
+    Using reasoning analogous to Alyssa's, describe how the difference of two
+    intervals may be computed. Define a corresponding subtraction procedure,
+    called \texttt{sub-interval}.
+\end{quote}
+
+% Still working in ex2.7.scm to avoid copy-pasting
+\lstinputlisting[firstline=60,lastline=64]{ch2/ex2.7.scm}
+
+\section{Exercise 2.9}
+\begin{quote}
+    The width of an interval is half of the difference between its upper and
+    lower bounds. The width is a measure of the uncertainty of the number
+    specified by the interval. For some arithmetic operations the width of the
+    result of combining two intervals is a function only of the widths of the
+    argument intervals, whereas for others the width of the combination is not
+    a function of the widths of the argument intervals. Show that the width of
+    the sum (or difference) of two intervals is a function only of the widths
+    of the intervals being added (or subtracted). Give examples to show that
+    this is not true for multiplication or division.
+\end{quote}
+
+\subsection{Addition}
+\begin{equation*}
+    % This doesn't produce exactly what I'd like formatting-wise, but it's close
+    % enough.
+    \begin{split}
+        \textrm{Let }i_a = [l_a, h_a], i_b = [l_b, h_b] \\
+        \Rightarrow width_a = h_a - l_a, width_b = h_b - l_b \\
+        i_{a+b} = [l_a + l_b, h_a + h_b] \\
+        \Rightarrow width_{a+b} = (h_a + h_b) - (l_a + l_b) \\
+                                = (h_a - l_a) + (h_b - l_b) \\
+                                = width_a + width_b \\
+    \end{split}
+\end{equation*}
+$width_{a+b}$ is a function only of $width_a$ and $width_b$.
+
+\subsection{Subtraction}
+\begin{equation*}
+    \begin{split}
+        \textrm{Let }i_a = [l_a, h_a], i_b = [l_b, h_b] \\
+        \Rightarrow width_a = h_a - l_a, width_b = h_b - l_b \\
+        i_{a-b} = [l_a - l_b, h_a - h_b] \\
+        \Rightarrow width_{a+b} = (h_a - h_b) - (l_a - l_b) \\
+                                = (h_a - l_a) - (h_b - l_b) \\
+                                = width_a - width_b \\
+    \end{split}
+\end{equation*}
+$width_{a-b}$ is a function only of $width_a$ and $width_b$.
+
+\subsection{Multiplication}
+\begin{equation*}
+    \begin{split}
+        \textrm{Let }i_a = [2, 3], i_b = [3, 5], i_c = [4, 6] \\
+        \Rightarrow width_b = width_c = 2 \\
+        i_{a \times b} = [6, 15], i_{a \times c} = [8, 18] \\
+        \Rightarrow width_{a \times b} = 9, width_{a \times c} = 10 \\
+    \end{split}
+\end{equation*}
+$width_{a \times b}$ is not just a function of $width_a$ and $width_b$.
+
+\subsection{Division}
+\begin{equation*}
+    \begin{split}
+        \textrm{Let }i_a = [2, 3], i_b = [3, 5], i_c = [4, 6] \\
+        \Rightarrow width_b = width_c = 2 \\
+        i_{a \div b} = [2/5, 1], i_{a \div c} = [1/3, 3/4] \\
+        \Rightarrow width_{a \div b} = 3/5, width_{a \div c} = 5/12 \\
+    \end{split}
+\end{equation*}
+$width_{a \div b}$ is not just a function of $width_a$ and $width_b$.
+
+\section{Exercise 2.10}
+\begin{quote}
+    Ben Bitdiddle, an expert systems programmer, looks over Alyssa's shoulder
+    and comments that it is not clear what it means to divide by an interval
+    that spans zero. Modify Alyssa's code to check for this condition and to
+    signal an error if it occurs.
+\end{quote}
+
+\lstinputlisting[firstline=73,lastline=85]{ch2/ex2.7.scm}
+
+\section{Exercise 2.11}
+\begin{quote}
+    In passing, Ben also cryptically comments: “By testing the signs of the
+    endpoints of the intervals, it is possible to break \texttt{mul-interval}
+    into nine cases, only one of which requires more than two multiplications.”
+    Rewrite this procedure using Ben’s suggestion.
+\end{quote}
+
+\lstinputlisting[firstline=94,lastline=142]{ch2/ex2.7.scm}
+
 \end{document}
