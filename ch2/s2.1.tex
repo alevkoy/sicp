@@ -309,4 +309,71 @@ $width_{a \div b}$ is not just a function of $width_a$ and $width_b$.
     \end{IEEEeqnarray*}
 \end{proof}
 
+\section{Exercise 2.14}
+\begin{quote}
+    Demonstrate that Lem is right. Investigate the behavior of the system on a
+    variety of arithmetic expressions. Make some intervals $A$ and $B$, and use
+    them in computing the expressions $A / A$ and $A / B$. You will get the most
+    insight by using intervals whose width is a small percentage of the center
+    value. Examine the results of the computation in center-percent form (see
+    Exercise 2.12).
+\end{quote}
+
+Every time an operation is performed using inexact numbers, i.e. intervals with
+nonzero widths, the uncertainty of the operands is incorporated into the result.
+This means that algebraically equivalent computations involving different numbers
+or types of operations may produce different results. Consider an interval
+$A = [95,105] = 100\pm5\%$. Algebraically, $\frac{AA}{A} = A$, but in fact
+$\frac{AA}{A} \approx [86,116]$. Not only has the percentage error increased from
+5\% to approximately 15\%, but the center has moved from 100 to approximately
+101.
+
+Further consider two resistors in parallel with values $R_1=100\Omega\pm5\%$ and
+$R_2=200\Omega\pm5\%$. \texttt{par1} computes an equivalent resistance interval
+of approximately $[57.3,77.3]$. \texttt{par2} computes approximately
+$[63.3,70.0]$. Lem is correct.
+
+\section{Exercise 2.15}
+\begin{quote}
+    Eva Lu Ator, another user, has also noticed the different intervals
+    computed by different but algebraically equivalent expressions. She says
+    that a formula to compute with intervals using Alyssa’s system will produce
+    tighter error bounds if it can be written in such a form that no variable
+    that represents an uncertain number is repeated. Thus, she says,
+    \texttt{par2} is a “better” program for parallel resistances than
+    \texttt{par1}. Is she right? Why?
+\end{quote}
+
+Eva Lu is basically right. As discussed above, every operation with inexact
+numbers increases the width. Multiplicative operations (including division) can
+also move the center (compared to an analogous exact operation). Consequently,
+a computation with fewer operations involving two inexact numbers will be more
+accurate than an algebraically equivalent operation with more such operations
+in the sense that the result of the computation with fewer operations will be
+closer to the result of the analogous computation performed using exact
+numbers.
+
+\section{Exercise 2.16}
+\begin{quote}
+    Explain, in general, why equivalent algebraic expressions may lead to
+    different answers. Can you devise an interval-arithmetic package that does
+    not have this shortcoming, or is this task impossible? (Warning: This
+    problem is very difficult.)
+\end{quote}
+
+See above for an explanation of why algebraically equivalent operations can
+produce different results.
+
+Computation errors affecting the center of the result could probably be
+eliminated by developing rules for the width of the result of each operation
+based on the widths of the operands and then applying carrying those widths
+through a computation performed with the exact center values of the inputs.
+However, this would not address the width error introduced by unnecessary
+operations compared to an algebraically equivalent computation that was not
+specified. In order to correct these errors, the package would need to reduce the
+input expression to the algebraically equivalent form that induces the least
+error. There are probably principles of numerical computation that could be used
+to do this heuristically, but I doubt that it can be done deterministically. In
+some cases, it may not be possible.
+
 \end{document}
