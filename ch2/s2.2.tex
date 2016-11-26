@@ -19,4 +19,23 @@
 
 \lstinputlisting[firstline=3,lastline=6]{ch2/ex2.17.scm}
 
+\section{Exercise 2.18}
+\begin{quote}
+    Define a procedure reverse that takes a list as argument and returns a list
+    of the same elements in reverse order:
+    \begin{lstlisting}
+(reverse (list 1 4 9 16 25))
+(25 16 9 4 1)
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=3,lastline=9]{ch2/ex2.18.scm}
+
+Somewhat atypically, this was much easier (for me, at least) to define as an
+iterative process than as a recursive process. The iterative process builds the
+result up from the end using \texttt{cons}. The only recursive implementation
+that I came up with starts from the beginning of the resulting list, so it
+needs to traverse the entire list that it already built on every recursive
+invocation, which I did using the previously defined \texttt{append} procedure.
+
 \end{document}
