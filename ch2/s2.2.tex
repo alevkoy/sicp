@@ -38,4 +38,26 @@ that I came up with starts from the beginning of the resulting list, so it
 needs to traverse the entire list that it already built on every recursive
 invocation, which I did using the previously defined \texttt{append} procedure.
 
+\section{Exercise 2.19}
+\begin{quote}
+    [Long discussion of using \texttt{cc} with multiple lists of coin
+    denominations.]
+
+    Define the procedures \texttt{first-denomination},
+    \texttt{except-first-denomination} and \texttt{no-more?} in terms of
+    primitive operations on list structures. Does the order of the list
+    \texttt{coin-values} affect the answer produced by \texttt{cc}? Why or why
+    not?
+\end{quote}
+
+\lstinputlisting[firstline=20,lastline=27]{ch2/ex2.19.scm}
+
+The order of \texttt{coin-values} does not affect the answer produced. It just
+affects the order in which the possible combinations are explored. At each level
+of the recursion, there are still a branch in which one coin is excluded and a
+branch in which the amount to be matched is decreased by the value of the
+current coin. As long as the recursion continues to the full depth in which all
+coins have been considered, all possible combinations will be explored and
+evaluated.
+
 \end{document}
