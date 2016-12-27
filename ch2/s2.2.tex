@@ -108,4 +108,50 @@ data.
 \lstinputlisting[firstline=5,lastline=9]{ch2/ex2.21.scm}
 \lstinputlisting[firstline=14,lastline=16]{ch2/ex2.21.scm}
 
+\section{Exercise 2.22}
+\begin{quote}
+    Louis Reasoner tries to rewrite the first \texttt{square-list} procedure of
+    Exercise 2.21 so that it evolves an iterative process:
+    \begin{lstlisting}
+(define (square-list items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (square (car things))
+                    answer))))
+  (iter items nil))
+    \end{lstlisting}
+    Unfortunately, defining \texttt{square-list} this way produces the answer
+    list in the reverse order of the one desired. Why?
+\end{quote}
+
+He iterates through the input list forward, that is from head to tail, but he
+builds the output list from tail to head. Because of this, the head of the
+input is transformed into the tail of the output, and so on.
+
+\begin{quote}
+    Louis then tries to fix his bug by interchanging the arguments to cons:
+    \begin{lstlisting}
+(define (square-list items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons answer
+                    (square
+                     (car things))))))
+  (iter items nil))
+    \end{lstlisting}
+This doesn’t work either. Explain.
+\end{quote}
+
+This gets the output in basically the right order, but the structure is wrong. A
+flat list is a sequence of pairs in which the \texttt{cdr} of each pair points
+to the next pair, and the last \texttt{cdr} points to \texttt{nil}. By switching
+the order of the arguments to \texttt{cons}, this code creates a pair in which
+the \texttt{car} is a compound object, and the \texttt{cdr} is a bare integer.
+The overall structure produced is a tree that is tited toward the left as
+opposed to one tilted toward the right.
+
 \end{document}
