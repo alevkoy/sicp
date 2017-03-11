@@ -154,4 +154,174 @@ the \texttt{car} is a compound object, and the \texttt{cdr} is a bare integer.
 The overall structure produced is a tree that is tited toward the left as
 opposed to one tilted toward the right.
 
+\section{Exercise 2.23}
+\begin{quote}
+    The procedure \texttt{for-each} is similar to \texttt{map}. It takes as
+    arguments a procedure and a list of elements. However, rather than forming
+    a list of the results, \texttt{for-each} just applies the procedure to each
+    of the elements in turn, from left to right. The values returned by
+    applying the procedure to the elements are not used at all ---
+    \texttt{for-each} is used with procedures that perform an action, such as
+    printing. The value returned by the call to \texttt{for-each} (not
+    illustrated above) can be something arbitrary, such as \texttt{true}. Give
+    an implementation of \texttt{for-each}.
+\end{quote}
+
+\lstinputlisting[firstline=3,lastline=9]{ch2/ex2.23.scm}
+
+\section{Exercise 2.24}
+\begin{quote}
+    Suppose we evaluate the expression \texttt{(list 1 (list 2 (list 3 4)))}.
+    Give the result printed by the interpreter, the corresponding
+    box-and-pointer structure, and the interpretation of this as a tree (as in
+    Figure 2.6).
+\end{quote}
+
+The interpreter gives the result
+\begin{lstlisting}
+(1 (2 (3 4)))
+\end{lstlisting}
+
+\begin{tikzpicture}[
+        box/.style={rectangle, draw=black, thick, minimum size=5mm},
+        % Found at http://tex.stackexchange.com/a/269410
+        ptr/.style={{Circle[black, length=4pt]}-Latex,shorten <= -2pt}]
+    % Nodes
+    \node[box] (car1)                     { }; % (1
+    \node[box] (cdr1) [right=0cm of car1] { };
+    \node[box] (val1) [below=of car1]     {1};
+    \node[box] (car2) [right=of cdr1]     { }; %    (2
+    \node[box] (cdr2) [right=0cm of car2] { };
+    \node[box] (val2) [below=of car2]     {2};
+    \node[box] (car3) [right=of cdr2]     { }; %       (3
+    \node[box] (cdr3) [right=0cm of car3] { };
+    \node[box] (val3) [below=of car3]     {3};
+    \node[box] (car4) [right=of cdr3]     { }; %           4)))
+    \node[box] (cdr4) [right=0cm of car4] {/};
+    \node[box] (val4) [below=of car4]     {4};
+
+    % Lines
+    \draw[ptr] (car1.center) -- (val1.north); % (1
+    \draw[ptr] (cdr1.center) -- (car2.west);
+    \draw[ptr] (car2.center) -- (val2.north); %    (2
+    \draw[ptr] (cdr2.center) -- (car3.west);
+    \draw[ptr] (car3.center) -- (val3.north); %       (3
+    \draw[ptr] (cdr3.center) -- (car4.west);
+    \draw[ptr] (car4.center) -- (val4.north); %          4)))
+\end{tikzpicture}
+
+\begin{allintypewriter}
+
+\Tree [.{(1 (2 (3 4)))}
+    1
+    [.{(2 (3 4))}
+        2
+        [.{(3 4)}
+            3
+            4 ]]]
+
+\end{allintypewriter}
+
+\section{Exercise 2.25}
+\begin{quote}
+    Give combinations of \texttt{cars} and \texttt{cdrs} that will pick 7 from
+    each of the following lists:
+
+    \begin{lstlisting}
+(1 3 (5 7) 9)
+((7))
+(1 (2 (3 (4 (5 (6 7))))))
+    \end{lstlisting}
+\end{quote}
+
+\begin{enumerate}
+    \item The sequence is \texttt{cdr, cdr, car, cdr, car}, i.e.
+        \begin{lstlisting}
+(car (cdr (car (cdr (cdr x )))))
+        \end{lstlisting}
+        \texttt{cdr} produces a pair, so the final \texttt{car} is necessary to
+        remove the \texttt{7} from \texttt{(7)}.
+    \item \texttt{(car (car x))}
+    \item Each \texttt{cdr} produces a pair, of which the first element is
+        another list, so \texttt{car} must be used to access that list directly.
+        There are six layers of nested lists, so there need to be 6
+        \texttt{cdr}/\texttt{car} pairs.
+        \begin{lstlisting}
+(car (cdr
+    (car (cdr
+        (car (cdr
+            (car (cdr
+                (car (cdr
+                    (car (cdr x))))))))))))
+        \end{lstlisting}
+\end{enumerate}
+
+\section{Exercise 2.26}
+\begin{quote}
+	Suppose we define x and y to be two lists:
+    \begin{lstlisting}
+(define x (list 1 2 3))
+(define y (list 4 5 6))
+    \end{lstlisting}
+	What result is printed by the interpreter in response to evaluating each of
+	the following expressions:
+    \begin{lstlisting}
+(append x y)
+(cons x y)
+(list x y)
+    \end{lstlisting}
+\end{quote}
+
+\begin{enumerate}
+    \item \texttt{append} concatenates two lists; the result is a list:
+        \texttt{(1 2 3 4 5 6)}.
+    \item \texttt{cons} constructs a pair out of its arguments, effectively
+        prepending the first argument to the sceond argument if the second
+        argument is a list: \texttt{((1 2 3) 4 5 6)}.
+    \item \texttt{list} constructs a list in which each argument is a single
+        element: \texttt{((1 2 3) (4 5 6))}.
+\end{enumerate}
+
+\section{Exercise 2.27}
+\begin{quote}
+    Modify your reverse procedure of Exercise 2.18 to produce a
+    \texttt{deep-reverse} procedure that takes a list as argument and returns
+    as its value the list with its elements reversed and with all sublists
+    deep-reversed as well. For example,
+    \begin{lstlisting}
+(define x
+  (list (list 1 2) (list 3 4)))
+
+x
+((1 2) (3 4))
+
+(reverse x)
+((3 4) (1 2))
+
+(deep-reverse x)
+((4 3) (2 1))
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=3,lastline=13]{ch2/ex2.27.scm}
+
+\section{Exercise 2.28}
+\begin{quote}
+    Write a procedure \texttt{fringe} that takes as argument a tree
+    (represented as a list) and returns a list whose elements are all the
+    leaves of the tree arranged in left-to-right order. For example,
+    \begin{lstlisting}
+(define x
+  (list (list 1 2) (list 3 4)))
+
+(fringe x)
+(1 2 3 4)
+
+(fringe (list x x))
+(1 2 3 4 1 2 3 4)
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=3,lastline=16]{ch2/ex2.28.scm}
+
 \end{document}
