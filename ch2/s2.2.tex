@@ -324,4 +324,50 @@ x
 
 \lstinputlisting[firstline=3,lastline=16]{ch2/ex2.28.scm}
 
+\section{Exercise 2.29}
+\begin{quote}
+	[Long explanation of binary mobiles.]
+
+    \begin{enumerate}
+        \item Write the corresponding selectors \texttt{left-branch} and
+            \texttt{right-branch}, which return the branches of a mobile, and
+            \texttt{branch-length} and \texttt{branch-structure}, which return
+            the components of a branch.
+        \item Using your selectors, define a procedure \texttt{total-weight}
+            that returns the total weight of a mobile.
+        \item A mobile is said to be \emph{balanced} if the torque applied by
+            its top-left branch is equal to that applied by its top-right
+            branch (that is, if the length of the left rod multiplied by the
+            weight hanging from that rod is equal to the corresponding product
+            for the right side) and if each of the submobiles hanging off its
+            branches is balanced. Design a predicate that tests whether a
+            binary mobile is balanced.
+        \item Suppose we change the representation of mobiles so that the
+            constructors are
+            \begin{lstlisting}
+(define (make-mobile left right)
+  (cons left right))
+
+(define (make-branch length structure)
+  (cons length structure))
+            \end{lstlisting}
+            How much do you need to change your programs to convert to the new
+            representation?
+    \end{enumerate}
+\end{quote}
+
+\begin{enumerate}
+    \item \lstinputlisting[firstline=11,lastline=21]{ch2/ex2.29.scm}
+
+    \item \lstinputlisting[firstline=40,lastline=52]{ch2/ex2.29.scm}
+
+    \item \lstinputlisting[firstline=75,lastline=87]{ch2/ex2.29.scm}
+
+    \item The preceding functions are written in terms of \texttt{make-mobile}
+        and \texttt{make-branch}. They do not need to be changed at all if the
+        underlying representation of mobiles or branches changes. One assumption
+        I do make about the representation is that a mobile consisting of just
+        one weight is represented using a bare numeric value.
+\end{enumerate}
+
 \end{document}
