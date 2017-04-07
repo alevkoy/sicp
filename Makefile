@@ -23,7 +23,8 @@ $(PDFDIR)/s2.1.pdf: ex2.1.scm ex2.2.scm ex2.4.scm ex2.5.scm ex2.6.scm \
 	ex2.7.scm
 
 $(PDFDIR)/s2.2.pdf: ex2.17.scm ex2.18.scm ex2.19.scm ex2.20.scm ex2.21.scm \
-	ex2.23.scm ex2.27.scm ex2.28.scm ex2.29.scm ex2.30.scm ex2.32.scm
+	ex2.23.scm ex2.27.scm ex2.28.scm ex2.29.scm ex2.30.scm ex2.32.scm \
+	ex2.33.scm ex2.37.scm
 
 # All documents use a common style package
 $(PDF): mystyle.sty

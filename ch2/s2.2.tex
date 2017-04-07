@@ -441,4 +441,131 @@ the recursively defined procedure works by progressively building up the sets of
 subsets represented by longer lists, starting with the empty list in the base
 case and ending with the full list of elements in the input set.
 
+\section{Exercise 2.33}
+\begin{quote}
+    Fill in the missing expressions to complete the following definitions of
+    some basic list-manipulation operations as accumulations:
+    \begin{lstlisting}
+(define (map p sequence)
+  (accumulate (lambda (x y) <??>)
+              nil sequence))
+
+(define (append seq1 seq2)
+  (accumulate cons <??> <??>))
+
+(define (length sequence)
+  (accumulate <??> 0 sequence))
+    \end{lstlisting}
+\end{quote}
+
+\texttt{map} is pretty straightforward. We perform the operation on the first
+element and concatentate it with the list of already-transformed elements.
+\lstinputlisting[firstline=12,lastline=16]{ch2/ex2.33.scm}
+
+\texttt{append}, as usual, ends up dismantling its first parameter entirely and
+rebuilding it at the front of its scond.
+\lstinputlisting[firstline=22,lastline=23]{ch2/ex2.33.scm}
+
+\texttt{length} may be the most typical accumulation in that it just adds up a
+number. The only weird thing is that it does not actually examine the elements
+of the input.
+\lstinputlisting[firstline=29,lastline=33]{ch2/ex2.33.scm}
+
+\section{Exercise 2.34}
+\begin{quote}
+	[Explanation of Horner's rule.]
+
+    Fill in the following template to produce a procedure that evaluates a
+    polynomial using Horner's rule. Assume that the coefficients of the
+    polynomial are arranged in a sequence, from $a_0$ through $a_n$.
+    \begin{lstlisting}
+(define
+  (horner-eval x coefficient-sequence)
+  (accumulate
+   (lambda (this-coeff higher-terms)
+     <??>)
+   0
+   coefficient-sequence))
+    \end{lstlisting}
+For example, to compute $1+3x+5x^3+x^5$ at $x=2$ you would evaluate
+    \begin{lstlisting}
+(horner-eval 2 (list 1 3 0 5 0 1))
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=41,lastline=46]{ch2/ex2.33.scm}
+
+\section{Exercise 2.35}
+\begin{quote}
+	Redefine \texttt{count-leaves} from 2.2.2 as an accumulation:
+
+	\begin{lstlisting}
+(define (count-leaves t)
+  (accumulate <??> <??> (map <??> <??>)))
+	\end{lstlisting}
+\end{quote}
+
+\texttt{map} does the heavy lifting here. I could also imagine a version in
+which the function supplied to \texttt{accumulate} handles the different cases,
+and the input sequence is the tree itself.
+\lstinputlisting[firstline=55,lastline=60]{ch2/ex2.33.scm}
+
+\section{Exercise 2.36}
+\begin{quote}
+    The procedure \texttt{accumulate-n} is similar to \texttt{accumulate}
+    except that it takes as its third argument a sequence of sequences, which
+    are all assumed to have the same number of elements. It applies the
+    designated accumulation procedure to combine all the first elements of the
+    sequences, all the second elements of the sequences, and so on, and returns
+    a sequence of the results. For instance, if \texttt{s} is a sequence
+    containing four sequences, \texttt{((1 2 3) (4 5 6) (7 8 9) (10 11 12))},
+    then the value of \texttt{(accumulate-n + 0 s)} should be the sequence
+    \texttt{(22 26 30)}. Fill in the missing expressions in the following
+    definition of \texttt{accumulate-n}:
+    \begin{lstlisting}
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      nil
+      (cons (accumulate op init <??>)
+            (accumulate-n op init <??>))))
+    \end{lstlisting}
+\end{quote}
+
+The first element of the results list will be an accumulation across the first
+elements of the input lists. The rest of the results list will be an
+\texttt{accumulate-n} call on the input lists with the first elements removed.
+\lstinputlisting[firstline=73,lastline=77]{ch2/ex2.33.scm}
+
+\section{Exercise 2.37}
+\begin{quote}
+    [Long explanation of matrix operations.]
+
+    Fill in the missing expressions in the following procedures for computing
+    the other matrix operations. (The procedure \texttt{accumulate-n} is
+    defined in Exercise 2.36.)
+    \begin{lstlisting}
+(define (matrix-*-vector m v)
+  (map <??> m))
+
+(define (transpose mat)
+  (accumulate-n <??> <??> mat))
+
+(define (matrix-*-matrix m n)
+  (let ((cols (transpose n)))
+    (map <??> m)))
+    \end{lstlisting}
+\end{quote}
+
+The representation of matrices in this problem would suggest that vectors are
+taken to be row vectors, i.e. with one row. However, matrix-vector
+multiplication is only defined for column vectors, so vectors in the following
+code are taken to be column vectors.
+
+\lstinputlisting[firstline=23,lastline=26]{ch2/ex2.37.scm}
+I didn't expect \texttt{transpose} to be this elegant, but there is a
+transposition inherent in \texttt{accumulate-n}.
+\lstinputlisting[firstline=38,lastline=39]{ch2/ex2.37.scm}
+\texttt{matrix-*-matrix} is somewhat more elaborate.
+\lstinputlisting[firstline=46,lastline=52]{ch2/ex2.37.scm}
+
 \end{document}
