@@ -568,4 +568,47 @@ transposition inherent in \texttt{accumulate-n}.
 \texttt{matrix-*-matrix} is somewhat more elaborate.
 \lstinputlisting[firstline=46,lastline=52]{ch2/ex2.37.scm}
 
+\section{Exercise 2.38}
+\begin{quote}
+    The \texttt{accumulate} procedure is also known as \texttt{fold-right},
+    because it combines the first element of the sequence with the result of
+    combining all the elements to the right. There is also a
+    \texttt{fold-left}, which is similar to \texttt{fold-right}, except that it
+    combines elements working in the opposite direction:
+    \begin{lstlisting}
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest)
+        result
+        (iter (op result (car rest))
+              (cdr rest))))
+  (iter initial sequence))
+    \end{lstlisting}
+    What are the values of
+    \begin{lstlisting}
+(fold-right / 1 (list 1 2 3))
+(fold-left  / 1 (list 1 2 3))
+(fold-right list nil (list 1 2 3))
+(fold-left  list nil (list 1 2 3))
+    \end{lstlisting}
+    Give a property that op should satisfy to guarantee that
+    \texttt{fold-right} and \texttt{fold-left} will produce the same values for
+    any sequence.
+\end{quote}
+
+\begin{lstlisting}
+(fold-right / 1 (list 1 2 3))
+> 3/2
+(fold-left  / 1 (list 1 2 3))
+> 1/6
+(fold-right list nil (list 1 2 3))
+> (1 (2 (3 ())))
+(fold-left  list nil (list 1 2 3))
+> (((() 1) 2) 3)
+\end{lstlisting}
+
+In order for \texttt{fold-left} and \texttt{fold-right} to produce the same
+result, \texttt{op} must be commutative, i.e. the order of \texttt{op}'s
+operands must not affect the result.
+
 \end{document}
