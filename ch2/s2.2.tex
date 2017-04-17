@@ -611,4 +611,141 @@ In order for \texttt{fold-left} and \texttt{fold-right} to produce the same
 result, \texttt{op} must be commutative, i.e. the order of \texttt{op}'s
 operands must not affect the result.
 
+\section{Exercise 2.39}
+\begin{quote}
+    Complete the following definitions of \texttt{reverse} (Exercise 2.18) in
+    terms of \texttt{fold-right} and \texttt{fold-left} from Exercise 2.38:
+    \begin{lstlisting}
+(define (reverse sequence)
+  (fold-right
+   (lambda (x y) <??>) nil sequence))
+
+(define (reverse sequence)
+  (fold-left
+   (lambda (x y) <??>) nil sequence))
+    \end{lstlisting}
+\end{quote}
+
+\lstinputlisting[firstline=4,lastline=8]{ch2/ex2.39.scm}
+The \texttt{fold-left} version can be written using \texttt{append} very
+analogously to the \texttt{fold-right} version, but \texttt{cons} is more
+efficient.
+\lstinputlisting[firstline=13,lastline=17]{ch2/ex2.39.scm}
+
+\section{Exercise 2.40}
+\begin{quote}
+    Define a procedure \texttt{unique-pairs} that, given an integer $n$,
+    generates the sequence of pairs $(i,j)$ with $1 \leq j < i \leq n$. Use
+    \texttt{unique-pairs} to simplify the definition of
+    \texttt{prime-sum-pairs} given above.
+\end{quote}
+
+This solution is pretty much copying and pasting from the text.
+\lstinputlisting[firstline=15,lastline=20]{ch2/ex2.40.scm}
+\lstinputlisting[firstline=51,lastline=54]{ch2/ex2.40.scm}
+
+\section{Exercise 2.41}
+\begin{quote}
+    Write a procedure to find all ordered triples of distinct positive integers
+    $i$, $j$, and $k$ less than or equal to a given integer $n$ that sum to a given
+    integer $s$.
+\end{quote}
+
+This is pretty analogous to \texttt{prime-sum-pairs}.
+\lstinputlisting[firstline=62,lastline=80]{ch2/ex2.40.scm}
+
+\section{Exericse 2.42}
+\begin{quote}
+    [Explanation of $n$-queens problem.]
+
+    We implement this solution as a procedure \texttt{queens}, which returns a
+    sequence of all solutions to the problem of placing $n$ queens on an $n
+    \times n$ chessboard.  \texttt{Queens} has an internal procedure
+    \texttt{queen-cols} that returns the sequence of all ways to place queens
+    in the first $k$ columns of the board.
+
+    \begin{lstlisting}
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions)
+           (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position
+                    new-row
+                    k
+                    rest-of-queens))
+                 (enumerate-interval
+                  1
+                  board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+    \end{lstlisting}
+
+    In this procedure \texttt{rest-of-queens} is a way to place $k - 1$ queens
+    in the first $k - 1$ columns, and \texttt{new-row} is a proposed row in
+    which to place the queen for the $k^\textrm{th}$ column. Complete the
+    program by implementing the representation for sets of board positions,
+    including the procedure \texttt{adjoin-position}, which adjoins a new
+    row-column position to a set of positions, and \texttt{empty-board}, which
+    represents an empty set of positions. You must also write the procedure
+    \texttt{safe?}, which determines for a set of positions, whether the queen
+    in the $k^\textrm{th}$ column is safe with respect to the others. (Note
+    that we need only check whether the new queen is safe -- the other queens
+    are already guaranteed safe with respect to each other.)
+\end{quote}
+
+The representation of board positions on an $n \times n$ board is a list of
+columns where each column is represented as the row number on which a queen is
+placed, and the $n^\textrm{th}$ column is the head of the list. (The orientation
+of the list doesn't actually matter, since the horizontal reflection of an
+$n$-queens solution is also a solution.) Row numbers are assumed (but not
+verified) to be within the bounds of the board that they represent.
+\lstinputlisting[firstline=30,lastline=53]{ch2/ex2.42.scm}
+
+\section{Exercise 2.43}
+\begin{quote}
+    Louis Reasoner is having a terrible time doing Exercise 2.42. His
+    \texttt{queens} procedure seems to work, but it runs extremely slowly.
+    (Louis never does manage to wait long enough for it to solve even the $6
+    \times 6$ case.) When Louis asks Eva Lu Ator for help, she points out that
+    he has interchanged the order of the nested mappings in the
+    \texttt{flatmap}, writing it as
+
+    \begin{lstlisting}
+(flatmap
+ (lambda (new-row)
+   (map (lambda (rest-of-queens)
+          (adjoin-position
+           new-row k rest-of-queens))
+        (queen-cols (- k 1))))
+ (enumerate-interval 1 board-size))
+    \end{lstlisting}
+
+    Explain why this interchange makes the program run slowly. Estimate how
+    long it will take Louis's program to solve the eight-queens puzzle,
+    assuming that the program in Exercise 2.42 solves the puzzle in time $T$.
+\end{quote}
+
+The code in Exercise 2.42, at each level of recursion, generates the solution to
+the level below it once. Louis Reasoner's code generates the solution to the
+previous level (recursively) $k$ times at level $k$.
+
+Suppose that $T$ is the sum of the amount of time it takes to solve each level
+of the recursion, $$T = T_n + T_{n-1} + \cdots + T_1$$ At each level $k$, Louis'
+solution computes the solution for $(k-1)$ $k$ times. Thus,
+\begin{IEEEeqnarray*}{rCl}
+    T_{\textrm{Louis}} & = & T_n + nT_{n-1} + n(n-1)T_{n-2} + \cdots +
+                             n(n-1)(n-2) \cdots 2 \cdot 1T_1 \\
+                       & = & O(T_n + nT_{n-1} + \cdots + n^nT_1) \\
+\end{IEEEeqnarray*}
+
+Supposing that $T_k \ll O(k^k)$, the exponential factor in the previous
+expression dominates. (This seems reasonable, since the code for Exercise 2.42
+finished quickly.) Thus, $T_{\textrm{Louis}} = O(n^nT)$.
+
 \end{document}
