@@ -748,4 +748,33 @@ Supposing that $T_k \ll O(k^k)$, the exponential factor in the previous
 expression dominates. (This seems reasonable, since the code for Exercise 2.42
 finished quickly.) Thus, $T_{\textrm{Louis}} = O(n^nT)$.
 
+\section{Exercise 2.44}
+\begin{quote}
+    Define the procedure \texttt{up-split} used by \texttt{corner-split}. It is
+    similar to \texttt{right-split}, except that it switches the roles of
+    \texttt{below} and \texttt{beside}.
+\end{quote}
+
+\emph{MIT Scheme does not currently support the picture language described in
+\emph{SICP}. Consequently, while I will attempt to produce reasonable solutions
+to the problems that deal with the picture language, it is not possible for me
+to truly produce working solutions.}
+
+\lstinputlisting[firstline=14,lastline=20]{ch2/ex2.44.scm}
+
+\section{Exercise 2.45}
+\begin{quote}
+    \texttt{Right-split} and \texttt{up-split} can be expressed as instances of
+    a general splitting operation. Define a procedure split with the property
+    that evaluating
+    \begin{lstlisting}
+(define right-split (split beside below))
+(define up-split (split below beside))
+    \end{lstlisting}
+    produces procedures \texttt{right-split} and \texttt{up-split} with the same
+    behaviors as the ones already defined.
+\end{quote}
+
+\lstinputlisting[firstline=24,lastline=31]{ch2/ex2.44.scm}
+
 \end{document}
