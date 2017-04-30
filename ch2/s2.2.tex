@@ -760,7 +760,7 @@ finished quickly.) Thus, $T_{\textrm{Louis}} = O(n^nT)$.
 to the problems that deal with the picture language, it is not possible for me
 to truly produce working solutions.}
 
-\lstinputlisting[firstline=14,lastline=20]{ch2/ex2.44.scm}
+\lstinputlisting[firstline=15,lastline=21]{ch2/ex2.44.scm}
 
 \section{Exercise 2.45}
 \begin{quote}
@@ -775,6 +775,77 @@ to truly produce working solutions.}
     behaviors as the ones already defined.
 \end{quote}
 
-\lstinputlisting[firstline=24,lastline=31]{ch2/ex2.44.scm}
+\lstinputlisting[firstline=25,lastline=32]{ch2/ex2.44.scm}
+
+\section{Exercise 2.46}
+\begin{quote}
+    A two-dimensional vector $v$ running from the origin to a point can be
+    represented as a pair consisting of an $x$-coordinate and a $y$-coordinate.
+    Implement a data abstraction for vectors by giving a constructor
+    \texttt{make-vect} and corresponding selectors \texttt{xcor-vect} and
+    \texttt{ycor-vect}. In terms of your selectors and constructor, implement
+    procedures \texttt{add-vect}, \texttt{sub-vect}, and \texttt{scale-vect}
+    that perform the operations vector addition, vector subtraction, and
+    multiplying a vector by a scalar:
+    \begin{IEEEeqnarray*}{rCl}
+        (x_1, y_1) + (x_2, y_2) & = & (x_1 + x_2, y_1 + y_2), \\
+        (x_1, y_1) - (x_2, y_2) & = & (x_1 - x_2, y_1 - y_2), \\
+        s \cdot (x, y) & = & (sx, sy). \\
+    \end{IEEEeqnarray*}
+\end{quote}
+
+\lstinputlisting[firstline=39,lastline=62]{ch2/ex2.44.scm}
+
+\section{Exercise 2.47}
+\begin{quote}
+    Here are two possible constructors for frames:
+    \begin{lstlisting}
+(define (make-frame origin edge1 edge2)
+  (list origin edge1 edge2))
+
+(define (make-frame origin edge1 edge2)
+  (cons origin (cons edge1 edge2)))
+    \end{lstlisting}
+    For each constructor supply the appropriate selectors to produce an
+    implementation for frames.
+\end{quote}
+
+Implementation 1:
+\lstinputlisting[firstline=80,lastline=87]{ch2/ex2.44.scm}
+
+Implementation 2:
+\lstinputlisting[firstline=108,lastline=116]{ch2/ex2.44.scm}
+
+\section{Exercise 2.48}
+\begin{quote}
+    A directed line segment in the plane can be represented as a pair of
+    vectors --- the vector running from the origin to the start-point of the
+    segment, and the vector running from the origin to the end-point of the
+    segment. Use your vector representation from Exercise 2.46 to define a
+    representation for segments with a constructor \texttt{make-segment} and
+    selectors \texttt{start-segment} and end-segment.
+\end{quote}
+
+\lstinputlisting[firstline=131,lastline=138]{ch2/ex2.44.scm}
+
+\section{Exercise 2.49}
+\begin{quote}
+    Use \texttt{segments->painter} to define the following primitive painters:
+    \begin{itemize}
+        \item The painter that draws the outline of the designated frame.
+        \item The painter that draws an “X” by connecting opposite corners of
+            the frame.
+        \item The painter that draws a diamond shape by connecting
+            the midpoints of the sides of the frame.
+        \item The \texttt{wave} painter.
+    \end{itemize}
+\end{quote}
+
+\lstinputlisting[firstline=177,lastline=201]{ch2/ex2.44.scm}
+
+I have skipped the \texttt{wave} painter, because 1.) it would be very tedious
+to define, 2.) there does not appear to be a single, recognized solution, and
+3.) I have no good way to verify that a proposed solution is even approximately
+correct.
 
 \end{document}
