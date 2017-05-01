@@ -202,3 +202,56 @@
 
 ; I do not define the wave painter, due to the tedium and pointlessness of that
 ; task.
+
+; Exercise 2.50
+; transform-painter adapted from SICP.
+
+(define (transform-painter painter origin corner1 corner2)
+    (lambda (frame)
+        (let ((m (frame-coord-map frame)))
+            (let ((new-origin (m origin)))
+                (painter (make-frame new-origin
+                                     (sub-vect (m corner1)
+                                               new-origin)
+                                     (sub-vect (m corner2)
+                                               new-origin)))))))
+
+(define (flip-horiz painter)
+    (transform-painter painter
+                       (make-vect 1 0)
+                       (make-vect 0 0)
+                       (make-vect 1 1)))
+
+(define (rotate180 painter)
+    (transform-painter painter
+                       (make-vect 1 1)
+                       (make-vect 0 1)
+                       (make-vect 1 0)))
+
+(define (rotate270 painter)
+    (transform-painter painter
+                       (make-vect 0 1)
+                       (make-vect 0 0)
+                       (make-vect 1 1)))
+
+; A line from the center to the upper right corner, from which all of the
+; transformations should be evident.
+(define test-painter
+    (segments->painter (list (make-segment (make-vect .5 .5)
+                                           (make-vect 1 1)))))
+(define unit-frame (make-frame (make-vect 0 0)
+                               (make-vect 1 0)
+                               (make-vect 0 1)))
+
+(newline)
+(display "Test: ")
+(test-painter unit-frame)
+(newline)
+(display "Flip horizontal: ")
+((flip-horiz test-painter) unit-frame)
+(newline)
+(display "Rotate 180: ")
+((rotate180 test-painter) unit-frame)
+(newline)
+(display "Rotate 270 ")
+((rotate270 test-painter) unit-frame)
