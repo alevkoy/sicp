@@ -857,4 +857,60 @@ correct.
 
 \lstinputlisting[firstline=219,lastline=235]{ch2/ex2.44.scm}
 
+\section{Exercise 2.51}
+\begin{quote}
+    Define the \texttt{below} operation for painters. \texttt{Below} takes two
+    painters as arguments. The resulting painter, given a frame, draws with the
+    first painter in the bottom of the frame and with the second painter in the
+    top. Define \texttt{below} in two different ways -- first by writing a
+    procedure that is analogous to the \texttt{beside} procedure given above,
+    and again in terms of \texttt{beside} and suitable rotation operations
+    (from Exercise 2.50).
+\end{quote}
+
+Version analogous to \texttt{beside}:
+\lstinputlisting[firstline=283,lastline=295]{ch2/ex2.44.scm}
+
+Version defined in terms of \texttt{beside} and rotation:
+\lstinputlisting[firstline=302,lastline=304]{ch2/ex2.44.scm}
+
+\section{Exercise 2.52}
+\begin{quote}
+    Make changes to the square limit of \texttt{wave} shown in Figure 2.9 by
+    working at each of the levels described above. In particular:
+    \begin{enumerate}
+        \item Add some segments to the primitive \texttt{wave} painter of
+            Exercise 2.49 (to add a smile, for example).
+        \item Change the pattern constructed by \texttt{corner-split} (for
+            example, by using only one copy of the \texttt{up-split} and
+            \texttt{right-split} images instead of two).
+        \item Modify the version of \texttt{square-limit} that uses
+            \texttt{square-of-four} so as to assemble the corners in a
+            different pattern. (For example, you might make the big Mr. Rogers
+            look outward from each corner of the square.)
+    \end{enumerate}
+\end{quote}
+
+\subsection{Painter change}
+Because I did not define the \texttt{wave} painter earlier, I will modify the
+\texttt{x} painter. Here, I have added a short crossbar in the middle.
+
+\lstinputlisting[firstline=381,lastline=387]{ch2/ex2.44.scm}
+
+\subsection{\texttt{corner-split} change}
+As described in the problem, I use only one copy of the \texttt{up-split} and
+\texttt{right-split} images instead of two.
+
+\lstinputlisting[firstline=394,lastline=407]{ch2/ex2.44.scm}
+
+\subsection{\texttt{square-limit} change}
+When used on the simple \texttt{x} painter, this code has too many lines of
+output to practically verify that it would look like anything in particular.
+I think that this modification will maintain the original arrangement of images,
+while causing the innermost images to be horizontally flipped, such that, if
+used on the Rogers image, the innermost images will be looking out rather than
+in.
+
+\lstinputlisting[firstline=417,lastline=422]{ch2/ex2.44.scm}
+
 \end{document}

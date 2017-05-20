@@ -255,3 +255,172 @@
 (newline)
 (display "Rotate 270 ")
 ((rotate270 test-painter) unit-frame)
+
+; Exercise 2.51
+; beside and rotate90 adapted from SICP.
+
+(define (rotate90 painter)
+    (transform-painter painter
+                       (make-vect 1.0 0.0)
+                       (make-vect 1.0 1.0)
+                       (make-vect 0.0 0.0)))
+
+(define (beside painter1 painter2)
+    (let ((split-point (make-vect 0.5 0.0)))
+        (let ((paint-left (transform-painter painter1
+                                             (make-vect 0.0 0.0)
+                                             split-point
+                                             (make-vect 0.0 1.0)))
+              (paint-right (transform-painter painter2
+                                              split-point
+                                              (make-vect 1.0 0.0)
+                                              (make-vect 0.5 1.0))))
+            (lambda (frame)
+                (paint-left frame)
+                (paint-right frame)))))
+
+; Version analogous to beside
+(define (below bottom top)
+    (let ((split-point (make-vect 0.0 0.5)))
+        (let ((paint-bottom (transform-painter bottom
+                                               (make-vect 0.0 0.0)
+                                               (make-vect 1.0 0.0)
+                                               split-point))
+              (paint-top (transform-painter top
+                                            split-point
+                                            (make-vect 1.0 0.5)
+                                            (make-vect 0.0 1.0))))
+            (lambda (frame)
+                (paint-bottom frame)
+                (paint-top frame)))))
+
+(newline)
+(display "Outline below X:" )
+((below outline x) unit-frame)
+
+; Version defined in terms of beside and rotation
+(define (below bottom top)
+    (rotate90 (beside (rotate270 bottom)
+                      (rotate270 top))))
+
+(newline)
+(display "Outline below X:" )
+((below outline x) unit-frame)
+
+; Exercise 2.52
+; flip-vert, right-split, corner-split, square-of-four, and square-limit
+; adapted from SICP.
+
+; up-split redefined here so as to use the proper defnitions of below and
+; beside.
+(define (up-split painter n)
+    (if (= n 0)
+        painter
+        (let ((smaller (up-split painter
+                                 (- n 1))))
+            (below painter
+                   (beside smaller smaller)))))
+
+(define (flip-vert painter)
+    (transform-painter painter
+                       (make-vect 0.0 1.0)
+                       (make-vect 1.0 1.0)
+                       (make-vect 0.0 0.0)))
+
+(define (right-split painter n)
+    (if (= n 0)
+        painter
+        (let ((smaller (right-split painter
+                                    (- n 1))))
+            (beside painter
+                    (below smaller smaller)))))
+
+(define (corner-split painter n)
+    (if (= n 0)
+        painter
+        (let ((up (up-split painter (- n 1)))
+              (right (right-split painter
+                                (- n 1))))
+            (let ((top-left (beside up up))
+                  (bottom-right (below right
+                                       right))
+                  (corner (corner-split painter
+                                        (- n 1))))
+                (beside (below painter top-left)
+                        (below bottom-right
+                               corner))))))
+
+(define (identity painter)
+        painter)
+
+(define (square-of-four tl tr bl br)
+    (lambda (painter)
+        (let ((top (beside (tl painter)
+                           (tr painter)))
+              (bottom (beside (bl painter)
+                              (br painter))))
+            (below bottom top))))
+
+(define (square-limit painter n)
+    (let ((combine4 (square-of-four flip-horiz
+                                    identity
+                                    rotate180
+                                    flip-vert)))
+        (combine4 (corner-split painter n))))
+
+; Because I didn't define the wave painter above, I'll do this exercise in terms
+; of the x painter.
+
+; The original pattern, for reference, even though it is impractical for me to
+; make comparisons to the output at more than 1 level of recursion.
+(newline)
+(display "Original square limit of X: ")
+((square-limit x 1) unit-frame)
+
+; Part 1
+(define (x-new frame)
+    (define new-segment-painter
+        (segments->painter (list (make-segment (make-vect .25 .5)
+                                               (make-vect .75 .5)))))
+
+    (x frame)
+    (new-segment-painter frame))
+
+(newline)
+(display "New X painter: ")
+(x-new unit-frame)
+
+; Part 2
+(define (corner-split-new painter n)
+    (if (= n 0)
+        painter
+        ; Only use one copy of the painter in the top left and bottom right.
+        (let ((top-left (up-split painter
+                                  (- n 1)))
+              (bottom-right (right-split painter
+                                         (- n 1)))
+                  (corner (corner-split painter
+                                        (- n 1))))
+            (beside (below painter
+                           top-left)
+                    (below bottom-right
+                           corner)))))
+
+(newline)
+(display "New corner split: ")
+((corner-split-new x 1) unit-frame)
+
+; Part 3
+; This, when (hypothetically) used on the Rogers image, should cause him to look
+; out instead of in in the center. I have no idea whether that is actually what
+; it does.
+(define (square-limit-new painter n)
+    (let ((combine4 (square-of-four identity
+                                    flip-horiz
+                                    flip-vert
+                                    rotate180)))
+        (combine4 (corner-split painter n))))
+
+(newline)
+(display "New square limit of X: ")
+((square-limit-new x 1) unit-frame)
