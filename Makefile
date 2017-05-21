@@ -4,7 +4,7 @@ VPATH := ch1 ch2
 
 .PHONY: all clean
 
-SECTIONS := 1.1 1.2 1.3 2.1 2.2
+SECTIONS := 1.1 1.2 1.3 2.1 2.2 2.3
 PDFDIR := pdf
 PDF := $(addprefix $(PDFDIR)/s, $(addsuffix .pdf, $(SECTIONS)))
 
@@ -25,6 +25,8 @@ $(PDFDIR)/s2.1.pdf: ex2.1.scm ex2.2.scm ex2.4.scm ex2.5.scm ex2.6.scm \
 $(PDFDIR)/s2.2.pdf: ex2.17.scm ex2.18.scm ex2.19.scm ex2.20.scm ex2.21.scm \
 	ex2.23.scm ex2.27.scm ex2.28.scm ex2.29.scm ex2.30.scm ex2.32.scm \
 	ex2.33.scm ex2.37.scm ex2.39.scm ex2.40.scm ex2.42.scm ex2.44.scm
+
+$(PDFDIR)/s2.3.pdf:
 
 # All documents use a common style package
 $(PDF): mystyle.sty
