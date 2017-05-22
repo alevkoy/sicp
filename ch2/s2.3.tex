@@ -30,4 +30,69 @@
 > #t
 \end{lstlisting}
 
+\section{Exercise 2.54}
+\begin{quote}
+    Two lists are said to be \texttt{equal?} if they contain equal elements
+    arranged in the same order. For example,
+
+    \begin{lstlisting}
+(equal? '(this is a list)
+        '(this is a list))
+    \end{lstlisting}
+
+is true, but
+
+    \begin{lstlisting}
+(equal? '(this is a list)
+        '(this (is a) list))
+    \end{lstlisting}
+
+    is false. To be more precise, we can define \texttt{equal?} recursively in
+    terms of the basic \texttt{eq?} equality of symbols by saying that
+    \texttt{a} and \texttt{b} are \texttt{equal?} if they are both symbols and
+    the symbols are \texttt{eq?}, or if they are both lists such that
+    \texttt{(car a)} is \texttt{equal?} to \texttt{(car b)} and \texttt{(cdr
+    a)} is \texttt{equal?} to \texttt{(cdr b)}. Using this idea, implement
+    \texttt{equal?} as a procedure.
+\end{quote}
+
+\lstinputlisting[firstline=3,lastline=9]{ch2/ex2.54.scm}
+
+\section{Exercise 2.55}
+\begin{quote}
+    Eva Lu Ator types to the interpreter the expression
+
+    \begin{lstlisting}
+(car ''abracadabra)
+    \end{lstlisting}
+
+    To her surprise, the interpreter prints back \texttt{quote}. Explain.
+\end{quote}
+
+The character \texttt{'} is a syntactic shorthand for using the special form
+\texttt{quote} with the following object as the argument. It evaluates to a
+list of the symbols in the argument. When it is used on itself, as here, the
+inner \texttt{quote} gets evaluated by the outer \texttt{quote}, producing a
+list with \texttt{quote} as its first element, i.e.
+\begin{lstlisting}
+(quote abracadabra)
+\end{lstlisting}
+\texttt{car} then evaluates to the first element of its argument.
+
+\section{Exercise 2.56}
+\begin{quote}
+    Show how to extend the basic differentiator to handle more kinds of
+    expressions. For instance, implement the differentiation rule
+    $$\frac{d(u^n)}{dx} = nu^{n-1}\frac{du}{dx}$$
+    by adding a new clause to the \texttt{deriv} program and defining
+    appropriate procedures \texttt{exponentiation?}, \texttt{base},
+    \texttt{exponent}, and \texttt{make-exponentiation}. (You may use the
+    symbol \texttt{**} to denote exponentiation.) Build in the rules that
+    anything raised to the power 0 is 1 and anything raised to the power 1 is
+    the thing itself.
+\end{quote}
+
+\lstinputlisting[firstline=47,lastline=60]{ch2/ex2.56.scm}
+\lstinputlisting[firstline=63,lastline=87]{ch2/ex2.56.scm}
+
 \end{document}
