@@ -99,3 +99,34 @@
 (newline)
 (display "d/dx (xy)^5 = ")
 (display (deriv '(** (* x y) 5) 'x))
+
+; Exercise 2.57
+
+; Change the representation of sums to a list of terms, prefixed with '+
+; make-sum and addend stay the same.
+
+(define (augend s)
+  (if (null? (cdddr s))
+      ; Only 2 terms
+      (caddr s)
+      ; More than 2 terms
+      (cons '+ (cddr s))))
+
+(define (multiplicand p)
+  (if (null? (cdddr p))
+      ; Only 2 terms
+      (caddr p)
+      ; More than 2 terms
+      (cons '* (cddr p))))
+
+(newline)
+(display "d/dx 5x+2x = ")
+(display (deriv '(+ (* 5 x) (* 2 x)) 'x))
+
+(newline)
+(display "d/dx xy(x+3) = ")
+(display (deriv '(* x y (+ x 3)) 'x))
+
+(newline)
+(display "d/dx x^4+2x^3+3x^4 = ")
+(display (deriv '(+ (** x 4) (* 2 (** x 3)) (* 3 (** x 4))) 'x))

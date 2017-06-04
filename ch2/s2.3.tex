@@ -95,4 +95,23 @@ list with \texttt{quote} as its first element, i.e.
 \lstinputlisting[firstline=47,lastline=60]{ch2/ex2.56.scm}
 \lstinputlisting[firstline=63,lastline=87]{ch2/ex2.56.scm}
 
+\section{Exercise 2.57}
+\begin{quote}
+    Extend the differentiation program to handle sums and products of arbitrary
+    numbers of (two or more) terms. Then the last example above could be
+    expressed as
+    \begin{lstlisting}
+(deriv '(* x y (+ x 3)) 'x)
+    \end{lstlisting}
+    Try to do this by changing only the representation for sums and products,
+    without changing the \texttt{deriv} procedure at all. For example, the
+    \texttt{addend} of a sum would be the first term, and the \texttt{augend}
+    would be the sum of the rest of the terms.
+\end{quote}
+
+The new representation of sums and products is a list with the operator in the
+first position and the terms in subsequent positions. The only things that needs
+to change are the selectors for the second operands:
+\lstinputlisting[firstline=108,lastline=120]{ch2/ex2.56.scm}
+
 \end{document}
