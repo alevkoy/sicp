@@ -112,6 +112,46 @@ list with \texttt{quote} as its first element, i.e.
 The new representation of sums and products is a list with the operator in the
 first position and the terms in subsequent positions. The only things that needs
 to change are the selectors for the second operands:
-\lstinputlisting[firstline=108,lastline=120]{ch2/ex2.56.scm}
+\lstinputlisting[firstline=111,lastline=123]{ch2/ex2.56.scm}
+
+\section{Exericse 2.58}
+\begin{quote}
+    Suppose we want to modify the differentiation program so that it works with
+    ordinary mathematical notation, in which \texttt{+} and \texttt{*} are
+    infix rather than prefix operators. Since the differentiation program is
+    defined in terms of abstract data, we can modify it to work with different
+    representations of expressions solely by changing the predicates,
+    selectors, and constructors that define the representation of the algebraic
+    expressions on which the differentiator is to operate.
+    \begin{enumerate}
+        \item Show how to do this in order to differentiate algebraic
+            expressions presented in infix form, such as \texttt{(x + (3 * (x +
+            (y + 2))))}. To simplify the task, assume that \texttt{+} and
+            \texttt{*} always take two arguments and that expressions are fully
+            parenthesized.
+        \item The problem becomes substantially harder if we allow standard
+            algebraic notation, such as \texttt{(x + 3 * (x + y + 2))}, which
+            drops unnecessary parentheses and assumes that multiplication is
+            done before addition. Can you design appropriate predicates,
+            selectors, and constructors for this notation such that our
+            derivative program still works?
+    \end{enumerate}
+\end{quote}
+
+\begin{enumerate}
+    \item In fully parenthesized infix form, the only things that need to
+        change are the constructors and selectors for the different types of
+        expressions.
+        \lstinputlisting[firstline=147,lastline=200]{ch2/ex2.56.scm}
+    \item Using standard algebraic notation, the predicates identifying the
+        different types of expressions need to employ a notion of precedence.
+        An expression is only of the type indicated by a certain operator if no
+        lower-precedence operators are present. The selectors are modified to
+        search for the operand relevant to their type and split the overall
+        expression around that operator. The constructors stay the same as in
+        part 1, which can result in output expressions that are not reduced to
+        the simplest form, but that would be considerably more complicated.
+        \lstinputlisting[firstline=211,lastline=288]{ch2/ex2.56.scm}
+\end{enumerate}
 
 \end{document}
