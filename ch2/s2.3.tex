@@ -154,4 +154,35 @@ to change are the selectors for the second operands:
         \lstinputlisting[firstline=211,lastline=288]{ch2/ex2.56.scm}
 \end{enumerate}
 
+\section{Exercise 2.59}
+\begin{quote}
+    Implement the \texttt{union-set} operation for the unordered-list
+    representation of sets.
+\end{quote}
+
+\lstinputlisting[firstline=24,lastline=29]{ch2/ex2.59.scm}
+
+This is the same approach as \texttt{intersection-set}, \texttt{car}-ing down
+\texttt{set1} and \texttt{cons}-ing up \texttt{set2}. This has the disadvantage
+that, each time we search in \texttt{set2} for an element from \texttt{set1},
+we needlessly consider all of the elements that we have already added from
+\texttt{set1}. If \texttt{set1} has size $M$, and \texttt{set2} has size $N$,
+this produces a worst-case (sets totally disjoint) runtime complexity of
+\begin{equation*}
+    O(M * N + \sum_{i=1}^{M}i = O(M * N + \frac{M^2}{2}) = O(M^2 + MN).
+\end{equation*}
+
+An alternative strategy would be to store the non-intersecting elements of
+\texttt{set1} in a third set, \texttt{set3} then append \texttt{set2} to that
+set. This would only pay the cost of traversing the non-intersecting elements
+once:
+\begin{equation*}
+    O(M * N + M) = O(M *N)
+\end{equation*}
+
+If $M \approx N$, these asymptotic complexities are the same. Consequently, it
+does not seem worth the additional code complexity to optimize this algorithm,
+especially considering the inefficiency of the underlying data structure. There
+are lower-hanging fruit here.
+
 \end{document}
