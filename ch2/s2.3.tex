@@ -230,4 +230,17 @@ asymptotic complexity, the representation allowing duplicates would be more
 efficient as long as the number of duplicates in a typical set was
 $O(\textrm{number of distinct elements})$.
 
+\section{Exercise 2.61}
+\begin{quote}
+    Give an implementation of \texttt{adjoin-set} using the ordered
+    representation. By analogy with \texttt{element-of-set?} show how to take
+    advantage of the ordering to produce a procedure that requires on the
+    average about half as many steps as with the unordered representation.
+\end{quote}
+
+\lstinputlisting[firstline=25,lastline=35]{ch2/ex2.61.scm}
+
+This version does use $O(N)$ stack space, unlike the previous version, but it
+is already returning an $N$-size list, so the space complexity doesn't change.
+
 \end{document}
