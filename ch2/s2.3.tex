@@ -252,4 +252,65 @@ is already returning an $N$-size list, so the space complexity doesn't change.
 This follows the same general form as \texttt{intersection-set}.
 \lstinputlisting[firstline=57,lastline=71]{ch2/ex2.61.scm}
 
+\section{Exercise 2.63}
+\begin{quote}
+    Each of the following two procedures converts a binary tree to a list.
+
+    \begin{lstlisting}
+(define (tree->list-1 tree)
+  (if (null? tree)
+      '()
+      (append
+       (tree->list-1
+        (left-branch tree))
+       (cons (entry tree)
+             (tree->list-1
+              (right-branch tree))))))
+
+(define (tree->list-2 tree)
+  (define (copy-to-list tree result-list)
+    (if (null? tree)
+        result-list
+        (copy-to-list
+         (left-branch tree)
+         (cons (entry tree)
+               (copy-to-list
+                (right-branch tree)
+                result-list)))))
+  (copy-to-list tree '()))
+    \end{lstlisting}
+
+    \begin{enumerate}
+        \item Do the two procedures produce the same result for every tree? If
+            not, how do the results differ? What lists do the two procedures
+            produce for the trees in Figure 2.16?
+        \item Do the two procedures have the same order of growth in the number
+            of steps required to convert a balanced tree with $n$ elements to a
+            list? If not, which one grows more slowly?
+    \end{enumerate}
+\end{quote}
+
+\begin{enumerate}
+    \item Both procedures have the effect of outputting the in-order traversal
+        of the input tree. Consequently, they produce the same result for every
+        tree. For all of the lists in Figure 2.16, both procedures
+        produce the list \texttt{(1 3 5 7 9)}.
+    \item Both procedures traverse each element of the tree once.
+        \texttt{tree->list-2} just performs a constant-time \texttt{cons}
+        operation for each element, so \texttt{tree->list-2} has $O(n)$ time
+        complexity.
+
+        \texttt{tree->list-1} performs an \texttt{append} for each
+        tree element. \texttt{Append} has time complexity linear in the number
+        of elements in the first argument, which is the list form of the left
+        branch of the current element. Because the tree is balanced, each
+        recursive invocation of \texttt{tree->list-1} calls \texttt{append} with
+        a list approximately half as long as in the previous invocation of
+        \texttt{tree->list-1}. Therefore, the time complexity of
+        \texttt{tree->list-1} is $O(n\log n)$.
+
+        The number of steps for \texttt{tree->list-2} grows more slowly than for
+        \texttt{tree->list-1}.
+\end{enumerate}
+
 \end{document}
