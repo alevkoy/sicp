@@ -394,4 +394,20 @@ This follows the same general form as \texttt{intersection-set}.
         input size $n/2$, so the time complexity is linear.
 \end{enumerate}
 
+\section{Exercise 2.65}
+\begin{quote}
+    Use the results of Exercise 2.63 and Exercise 2.64 to give $\Theta(n)$
+    implementations of \texttt{union-set} and \texttt{intersection-set} for
+    sets implemented as (balanced) binary trees.
+\end{quote}
+
+These both consist of transforming the input trees into sorted lists, performing
+the specified operation on the sorted lists, and transforming the result back
+into a sorted, balanced tree. Each of these operations are linear in the number
+of elements in the input trees, so the combination is also $\Theta(n)$.
+
+\lstinputlisting[firstline=152,lastline=171]{ch2/ex2.63.scm}
+
+\lstinputlisting[firstline=197,lastline=215]{ch2/ex2.63.scm}
+
 \end{document}
