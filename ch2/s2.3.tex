@@ -410,4 +410,68 @@ of elements in the input trees, so the combination is also $\Theta(n)$.
 
 \lstinputlisting[firstline=197,lastline=215]{ch2/ex2.63.scm}
 
+\section{Exercise 2.66}
+\begin{quote}
+    Implement the \texttt{lookup} procedure for the case where the set of
+    records is structured as a binary tree, ordered by the numerical values of
+    the keys.
+\end{quote}
+
+This works basically the same way as \texttt{element-of-set?} for the tree
+representation with the added complication that the tree is ordered based on
+the keys of the records.
+
+\lstinputlisting[firstline=10,lastline=26]{ch2/ex2.66.scm}
+
+\section{Exercise 2.67}
+\begin{quote}
+    Define an encoding tree and a sample message:
+
+    \begin{lstlisting}
+(define sample-tree
+  (make-code-tree
+   (make-leaf 'A 4)
+   (make-code-tree
+    (make-leaf 'B 2)
+    (make-code-tree
+     (make-leaf 'D 1)
+     (make-leaf 'C 1)))))
+
+(define sample-message
+  '(0 1 1 0 0 1 0 1 0 1 1 1 0))
+    \end{lstlisting}
+
+    Use the \texttt{decode} procedure to decode the message, and give the
+    result.
+\end{quote}
+
+The decoded message is \texttt{(A D A B B C A)}.
+
+\section{Exercise 2.68}
+\begin{quote}
+    The \texttt{encode} procedure takes as arguments a message and a tree and
+    produces the list of bits that gives the encoded message.
+
+    \begin{lstlisting}
+(define (encode message tree)
+  (if (null? message)
+      '()
+      (append
+       (encode-symbol (car message)
+                      tree)
+       (encode (cdr message) tree))))
+    \end{lstlisting}
+
+    \texttt{Encode-symbol} is a procedure, which you must write, that returns
+    the list of bits that encodes a given symbol according to a given tree. You
+    should design \texttt{encode-symbol} so that it signals an error if the
+    symbol is not in the tree at all. Test your procedure by encoding the
+    result you obtained in Exercise 2.67 with the sample tree and seeing
+    whether it is the same as the original sample message.
+\end{quote}
+
+\lstinputlisting[firstline=110,lastline=125]{ch2/ex2.67.scm}
+
+This program produces the original encoded message from the decoded message.
+
 \end{document}
