@@ -474,4 +474,144 @@ The decoded message is \texttt{(A D A B B C A)}.
 
 This program produces the original encoded message from the decoded message.
 
+\section{Exercise 2.69}
+\begin{quote}
+    The following procedure takes as its argument a list of symbol-frequency
+    pairs (where no symbol appears in more than one pair) and generates a
+    Huffman encoding tree according to the Huffman algorithm.
+
+    \begin{lstlisting}
+(define (generate-huffman-tree pairs)
+  (successive-merge
+   (make-leaf-set pairs)))
+    \end{lstlisting}
+
+    \texttt{Make-leaf-set} is the procedure given above that transforms the
+    list of pairs into an ordered set of leaves. \texttt{Successive-merge} is
+    the procedure you must write, using \texttt{make-code-tree} to successively
+    merge the smallest-weight elements of the set until there is only one
+    element left, which is the desired Huffman tree. (This procedure is
+    slightly tricky, but not really complicated. If you find yourself designing
+    a complex procedure, then you are almost certainly doing something wrong.
+    You can take significant advantage of the fact that we are using an ordered
+    set representation.)
+\end{quote}
+
+\section{Exercise 2.70}
+\begin{quote}
+    The following eight-symbol alphabet with associated relative frequencies
+    was designed to efficiently encode the lyrics of 1950s rock songs. (Note
+    that the “symbols” of an “alphabet” need not be individual letters.)
+
+    % There has to be a better way to change the typeface here.
+    \begin{tabular}{>{\ttfamily}l>{\ttfamily}r>{\ttfamily}l>{\ttfamily}r}
+        A    & 2 & NA  & 16 \\
+        BOOM & 1 & SHA &  3 \\
+        GET  & 2 & YIP &  9 \\
+        JOB  & 2 & WAH &  1 \\
+    \end{tabular}
+
+    Use \texttt{generate-huffman-tree} (Exercise 2.69) to generate a
+    corresponding Huffman tree, and use \texttt{encode} (Exercise 2.68) to
+    encode the following message:
+
+    \begin{allintypewriter}
+Get a job
+Sha na na na na na na na na
+
+Get a job
+Sha na na na na na na na na
+
+Wah yip yip yip yip
+yip yip yip yip yip
+Sha boom
+    \end{allintypewriter}
+
+    How many bits are required for the encoding? What is the smallest number of
+    bits that would be needed to encode this song if we used a fixed-length
+    code for the eight-symbol alphabet?
+\end{quote}
+
+The encoded message is 87 bits. If a fixed-length code were used, there would
+need to be at least 3 bits per symbol, because there are $8 = 2^3$ symbols.
+The message has 36 symbols, so it would require 108 bits to encode in this way.
+
+\section{Exercise 2.70}
+\begin{quote}
+    Suppose we have a Huffman tree for an alphabet of $n$ symbols, and that the
+    relative frequencies of the symbols are $1,2,4,\ldots,2^{n−1}$. Sketch
+    the tree for $n=5$; for $n=10$. In such a tree (for general $n$) how many
+    bits are required to encode the most frequent symbol? The least frequent
+    symbol?
+\end{quote}
+
+$n=5$:
+
+\Tree [.{ABCDE 31}
+    {E 16}
+    [.{ABCD 15}
+        {D 8}
+        [.{ABC 7}
+            {C 4}
+            [.{AB 3}
+                 {B 2}
+                 {A 1} ]]]]
+
+$n=10$:
+
+\Tree [.{A-J 1024}
+    {J 512}
+    [.{A-I 511}
+        {I 256}
+        [.{A-H 255}
+            {H 128}
+            [.{A-G 127}
+                {G 64}
+                [.{A-F 63}
+                    {F 32}
+                    [.{ABCDE 31}
+                        {E 16}
+                        [.{ABCD 15}
+                            {D 8}
+                            [.{ABC 7}
+                                {C 4}
+                                [.{AB 3}
+                                    {B 2}
+                                    {A 1} ]]]]]]]]]
+
+In general, in this kind of tree, the most frequent symbol can be encoded using
+1 bit, and the least frequent symbol can be encoded using $n-1$ bits.
+
+\section{Exercise 2.72}
+\begin{quote}
+    Consider the encoding procedure that you designed in Exercise 2.68. What is
+    the order of growth in the number of steps needed to encode a symbol? Be
+    sure to include the number of steps needed to search the symbol list at
+    each node encountered. To answer this question in general is difficult.
+    Consider the special case where the relative frequencies of the $n$ symbols
+    are as described in Exercise 2.71, and give the order of growth (as a
+    function of $n$) of the number of steps needed to encode the most frequent
+    and least frequent symbols in the alphabet.
+\end{quote}
+
+Encoding the most frequent symbol takes $O(1)$ steps, assuming the tree was
+constructed using \texttt{make-code-tree}, which, with this frequency
+distribution, will always place the most frequent symbol on the left branch of
+the root, by itself. For each sub-tree traversed (of which there will be one in
+this case), \texttt{encode-symbol} performs a linear search of the symbols of
+the left branch, possibly followed by a similar search of the right branch, if
+the symbol was not in the left branch. In the case of the most frequent symbol,
+it will be found in the left branch, all by itself, so the search will take
+constant time. The recursion will then stop when it hits the leaf node
+containing the most frequent symbol.
+
+To encode the least frequent symbol, \texttt{encode-symbol} will have to
+traverse the tree to its deepest leaf, taking the right branch at each
+opportunity. At each level of recursion, of which there are $n-1$, a linear
+search over the remaining symbols will take place. There will be one fewer
+symbols at each subsequent level of the tree. The last level will be a leaf
+node, so no search will take place, but a constant amount of work will be
+performed. The number of steps to search every level is $\sum_{i=1}^{n}i =
+\frac{n(n+1)}{2} = O(n^2)$.
+
 \end{document}

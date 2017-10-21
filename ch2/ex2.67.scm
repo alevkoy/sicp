@@ -127,3 +127,52 @@
 (newline)
 (display "Encoded: ")
 (display (encode decoded sample-tree))
+
+; Exercise 2.69
+; generate-huffman-tree copied from SICP.
+
+(define (generate-huffman-tree pairs)
+  (successive-merge
+    (make-leaf-set pairs)))
+
+(define (successive-merge leaf-set)
+  (define (iterate tree leaf-set)
+    (cond ((null? leaf-set) tree)
+          ((null? tree) (iterate (car leaf-set) (cdr leaf-set)))
+          (else (iterate (make-code-tree (car leaf-set) tree)
+                         (cdr leaf-set)))))
+
+  (iterate '() leaf-set))
+
+(define pairs (list (list 'A 4) (list 'D 1) (list 'B 2) (list 'C 1)))
+(define sample-tree2 (generate-huffman-tree pairs))
+
+(newline)
+(display "Sample tree: ")
+(display sample-tree)
+(newline)
+(display "Constructed tree: ")
+(display sample-tree2)
+
+; Exercise 2.70
+
+(define message '(Get a job
+                  Sha na na na na na na na na
+                  Get a job
+                  Sha na na na na na na na na
+                  Wah yip yip yip yip
+                  yip yip yip yip yip
+                  Sha boom))
+
+(define tree (generate-huffman-tree '((A 2) (NA 16)
+                                      (BOOM 1) (SHA 3)
+                                      (GET 2) (YIP 9)
+                                      (JOB 2) (WAH 1))))
+
+(newline)
+(display "Encoded message: ")
+(define encoded (encode message tree))
+(display encoded)
+(newline)
+(display "Bits: ")
+(display (length encoded))
