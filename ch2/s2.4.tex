@@ -176,4 +176,49 @@
         many divisions.
 \end{enumerate}
 
+\section{Exercise 2.75}
+\begin{quote}
+    Implement the constructor \texttt{make-from-mag-ang} in message-passing
+    style. This procedure should be analogous to the
+    \texttt{make-from-real-imag} procedure given above.
+\end{quote}
+
+\lstinputlisting[firstline=18,lastline=26]{ch2/ex2.75.scm}
+
+\section{Exercise 2.76}
+\begin{quote}
+    As a large system with generic operations evolves, new types of data
+    objects or new operations may be needed. For each of the three strategies
+    -- generic operations with explicit dispatch, data-directed style, and
+    message-passing-style -- describe the changes that must be made to a system
+    in order to add new types or new operations. Which organization would be
+    most appropriate for a system in which new types must often be added? Which
+    would be most appropriate for a system in which new operations must often
+    be added?
+\end{quote}
+
+Steps to add a new type or operation:
+\begin{itemize}
+    \item For explicit dispatch, a new type requires new constructors and
+        accessors, and the implementation of each higher-level operation must
+        be modified to support the new type. A new low-level operation requires
+        an implementation that is aware of every type in the system.
+    \item For data-directed style, a new type requires an implementation of
+        every data-directed accessor and a new constructor. A new low-level
+        operation requires an implementation for every type.
+    \item For message-passing style, a new type requires a new implementation of
+        every low-level operation. A new low-level operation requires an
+        implementation in every type.
+\end{itemize}
+
+If new types must often be added, data-directed or message-passing styles would
+be appropriate. In each case, the required modifications can be made in one
+place without disturbing the code in the existing system.
+
+If new low-level operations must be added often, explicit dispatch would be more
+appropriate, also because it isolates the changes from the existing code.
+
+Assuming appropriate layering, new high-level operations can be added equally
+easily in each style.
+
 \end{document}
