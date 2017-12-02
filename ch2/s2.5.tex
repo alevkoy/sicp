@@ -1,0 +1,97 @@
+\documentclass{article}
+\author{Abraham Levkoy}
+\title{SICP exercises, section 2.4}
+
+\usepackage{mystyle}
+
+\begin{document}
+\maketitle
+
+\section{Exercise 2.77}
+\begin{quote}
+    Louis Reasoner tries to evaluate the expression \texttt{(magnitude z)} where
+    \texttt{z} is the object shown in Figure 2.24. To his surprise, instead of
+    the answer 5 he gets an error message from \texttt{apply-generic}, saying
+    there is no method for the operation \texttt{magnitude} on the types
+    \texttt{(complex)}. He shows this interaction to Alyssa P. Hacker, who says
+    ``The problem is that the complex-number selectors were never defined for
+    \texttt{complex} numbers, just for \texttt{polar} and \texttt{rectangular}
+    numbers. All you have to do to make this work is add the following to the
+    \texttt{complex} package:''
+    \begin{lstlisting}
+(put 'real-part '(complex) real-part)
+(put 'imag-part '(complex) imag-part)
+(put 'magnitude '(complex) magnitude)
+(put 'angle '(complex) angle)
+    \end{lstlisting}
+
+    Describe in detail why this works. As an example, trace through all the
+    procedures called in evaluating the expression \texttt{(magnitude z)} where
+    \texttt{z} is the object shown in Figure 2.24. In particular, how many times
+    is \texttt{apply-generic} invoked? What procedure is dispatched to in each
+    case?
+\end{quote}
+
+The object shown in Figure 2.24 could be expressed as
+\begin{lstlisting}
+('complex . ('rectangular . (3 . 4)))
+\end{lstlisting}
+
+The procedures called in evaluating \texttt{(magnitude z)} in the corrected
+system:
+\begin{enumerate}
+    \item \texttt{(apply-generic 'magnitude z)}: First application of
+        \texttt{apply-generic}
+    \item \texttt{(map type-tag z)}: Sets \texttt{type-tags} to
+        \texttt{('complex)}
+    \item \texttt{(get 'magnitude ('complex))}: This is what fails before the
+        fix.
+    \item \texttt{(apply magnitude ('rectangular . (3 . 4)))}: This is the
+        generic \texttt{magnitude} defined by the complex package.
+    \item \texttt{(apply-generic 'magnitude ('rectangular . (3 . 4)))}: Second
+        application of \texttt{apply-generic}
+    \item \texttt{(map type-tag ('rectangular . (3 . 4)))}: Sets
+        \texttt{type-tags} to \texttt{('rectangular)}
+    \item \texttt{get 'magnitude ('rectangular)}
+    \item \texttt{(apply magnitude (3 . 4))}: This is the \texttt{magnitude}
+        function from the rectangular package.
+    \item \texttt{(sqrt (+ (square 3) (square 4)))}
+\end{enumerate}
+
+The function \texttt{magnitude} is being used at the level of abstraction at
+which multiple types of numbers are defined. However, as it has been used so
+far, it only really makes sense for complex numbers, and it is defined at that
+level of abstraction. Packages are installed to provide implementations of
+\texttt{magnitude} for multiple representations of complex numbers, but the
+assumption that \texttt{magnitude} will be applied to complex numbers is
+implicit. The definition of \texttt{z} makes that assumption explicit by adding
+a \texttt{'complex} tag.
+
+Alyssa's fix works by raising the complex-number primitives to the level of
+abstraction at which multiple types of numbers are defined. When one of the
+generic complex-number selectors is called with a \texttt{'complex}-tagged
+argument, the outer tag is removed and the same \texttt{magnitude} is called
+again on the contents of the argument, now exposing the tag indicating the
+representation of complex numbers in use. Because there are two layers of tags,
+\texttt{apply-generic} must be called twice to find the real implementation.
+
+\section{Exercise 2.78}
+\begin{quote}
+    The internal procedures in the \texttt{scheme-number} package are
+    essentially nothing more than calls to the primitive procedures \texttt{+},
+    \texttt{-}, etc. It was not possible to use the primitives of the language
+    directly because our type-tag system requires that each data object have a
+    type attached to it. In fact, however, all Lisp implementations do have a
+    type system, which they use internally. Primitive predicates such as
+    \texttt{symbol?} and \texttt{number?} determine whether data objects have
+    particular types. Modify the definitions of \texttt{type-tag},
+    \texttt{contents}, and \texttt{attach-tag} from 2.4.2 so that our generic
+    system takes advantage of Scheme's internal type system. That is to say,
+    the system should work as before except that ordinary numbers should be
+    represented simply as Scheme numbers rather than as pairs whose car is the
+    symbol scheme-number.
+\end{quote}
+
+\lstinputlisting[firstline=186,lastline=201]{ch2/ex2.78.scm}
+
+\end{document}
