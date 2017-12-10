@@ -220,3 +220,76 @@
 (newline)
 (display "20 / 4 = ")
 (display (div 20 4))
+
+; Exercise 2.79
+
+; A few of the complex-number primitives were not converted to the data-directed
+; style in SICP. Here, I have hacked in the ones that are needed for my tests,
+; but they really should be in the complex arithmetic package copied from SICP
+; above.
+(put 'make-from-real-imag 'rectangular
+     (lambda (x y) (attach-tag 'rectangular (cons x y))))
+(put 'real-part '(rectangular) (lambda (c) (car c)))
+(put 'imag-part '(rectangular) (lambda (c) (cdr c)))
+
+(define (equ? a b)
+  (apply-generic 'equ? a b))
+
+(define (install-equ?-package)
+  ; Internal procedures
+  (define (equ?-scheme-number a b)
+    ; The result is a boolean, so it doesn't get a type tag.
+    (= a b))
+
+  ; numer and denom copied from SICP.
+  ; It would make more sense to define these implementations in the
+  ; packages for their respective types, but I want to keep the
+  ; solutions for exercises 2.78 and 2.79 separate.
+  (define (numer x) (car x))
+  (define (denom x) (cdr x))
+  (define (equ?-rational a b)
+    (and (= (numer a) (numer b))
+         (= (denom a) (denom b))))
+
+  (define (real-part c)
+    (apply-generic 'real-part c))
+  (define (imag-part c)
+    (apply-generic 'imag-part c))
+  (define (equ?-complex a b)
+    (and (= (real-part a) (real-part b))
+         (= (imag-part a) (imag-part b))))
+
+  ; External interface
+  (put 'equ? '(scheme-number scheme-number) equ?-scheme-number)
+  (put 'equ? '(rational rational) equ?-rational)
+  (put 'equ? '(complex complex) equ?-complex)
+
+  'done)
+
+(install-equ?-package)
+
+(newline)
+(display "3 == 3? ")
+(display (equ? (make-scheme-number 3) (make-scheme-number 3)))
+
+(newline)
+(display "-1 == 9? ")
+(display (equ? (make-scheme-number -1) (make-scheme-number 9)))
+
+(newline)
+(display "2/3 == 6/9? ")
+(display (equ? (make-rational 2 3) (make-rational 6 9)))
+
+(newline)
+(display "5/4 == 24/20? ")
+(display (equ? (make-rational 5 4) (make-rational 24 20)))
+
+(newline)
+(display "4 + 5i == 4 + 5i? ")
+(display (equ? (make-complex-from-real-imag 4 5)
+               (make-complex-from-real-imag 4 5)))
+
+(newline)
+(display "4 + 5i == 3 + 7i? ")
+(display (equ? (make-complex-from-real-imag 4 5)
+               (make-complex-from-real-imag 3 7)))
