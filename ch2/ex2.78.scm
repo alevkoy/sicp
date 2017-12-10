@@ -293,3 +293,47 @@
 (display "4 + 5i == 3 + 7i? ")
 (display (equ? (make-complex-from-real-imag 4 5)
                (make-complex-from-real-imag 3 7)))
+
+; Exercise 2.80
+
+(define (=zero? x)
+  (let ((zero ((get 'make-zero (type-tag x)))))
+    (equ? x zero)))
+
+(define (install-=zero?-package)
+  ; External interface
+  (put 'make-zero 'scheme-number (lambda () (make-scheme-number 0)))
+  (put 'make-zero 'rational (lambda () (make-rational 0 1)))
+  (put 'make-zero 'complex (lambda () (make-complex-from-real-imag 0 0)))
+
+  'done)
+
+(install-=zero?-package)
+
+(newline)
+(display "0 == 0? ")
+(display (=zero? (make-scheme-number 0)))
+
+(newline)
+(display "1 == 0? ")
+(display (=zero? (make-scheme-number 1)))
+
+(newline)
+(display "0/2 == 0? ")
+(display (=zero? (make-rational 0 1)))
+
+(newline)
+(display "1/2 == 0? ")
+(display (=zero? (make-rational 1 2)))
+
+(newline)
+(display "0+0i == 0? ")
+(display (=zero? (make-complex-from-real-imag 0 0)))
+
+(newline)
+(display "0+1i == 0? ")
+(display (=zero? (make-complex-from-real-imag 0 1)))
+
+(newline)
+(display "1+0i == 0? ")
+(display (=zero? (make-complex-from-real-imag 1 0)))
