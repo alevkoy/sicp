@@ -206,4 +206,27 @@ representation of complex numbers in use. Because there are two layers of tags,
         handling seems limited.
 \end{enumerate}
 
+\section{Exercise 2.82}
+\begin{quote}
+    Show how to generalize \texttt{apply-generic} to handle coercion in the
+    general case of multiple arguments. One strategy is to attempt to coerce
+    all the arguments to the type of the first argument, then to the type of
+    the second argument, and so on. Give an example of a situation where this
+    strategy (and likewise the two-argument version given above) is not
+    sufficiently general. (Hint: Consider the case where there are some
+    suitable mixed-type operations present in the table that will not be
+    tried.)
+\end{quote}
+
+This is a version of \texttt{apply-generic} using the method described above:
+\lstinputlisting[firstline=233,lastline=270]{ch2/ex2.82.scm}
+
+This method will not work for sets of arguments where not all arguments can be
+coerced to the type of any one argument, but all can be coerced to some other
+type that is not present in the argument list. Consider, for example, adding two
+numbers, one real and one imaginary. Neither can be coerced to the type of the
+other, but both can be coerced to \texttt{'complex}, and addition is well
+defined for complex numbers. However, this version of \texttt{apply-generic}
+cannot perform this operation, because it can't find the right set of coercions.
+
 \end{document}
