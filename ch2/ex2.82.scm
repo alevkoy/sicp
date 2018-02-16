@@ -78,44 +78,6 @@
 (define (make-scheme-number n)
   ((get 'make 'scheme-number) n))
 
-(define (install-rational-package)
-  ;; internal procedures
-  (define (numer x) (car x))
-  (define (denom x) (cdr x))
-  (define (make-rat n d)
-    (let ((g (gcd n d)))
-      (cons (/ n g) (/ d g))))
-  (define (add-rat x y)
-    (make-rat (+ (* (numer x) (denom y))
-                 (* (numer y) (denom x)))
-              (* (denom x) (denom y))))
-  (define (sub-rat x y)
-    (make-rat (- (* (numer x) (denom y))
-                 (* (numer y) (denom x)))
-              (* (denom x) (denom y))))
-  (define (mul-rat x y)
-    (make-rat (* (numer x) (numer y))
-              (* (denom x) (denom y))))
-  (define (div-rat x y)
-    (make-rat (* (numer x) (denom y))
-              (* (denom x) (numer y))))
-  ;; interface to rest of the system
-  (define (tag x) (attach-tag 'rational x))
-  (put 'add '(rational rational)
-       (lambda (x y) (tag (add-rat x y))))
-  (put 'sub '(rational rational)
-       (lambda (x y) (tag (sub-rat x y))))
-  (put 'mul '(rational rational)
-       (lambda (x y) (tag (mul-rat x y))))
-  (put 'div '(rational rational)
-       (lambda (x y) (tag (div-rat x y))))
-  (put 'make 'rational
-       (lambda (n d) (tag (make-rat n d))))
-  'done)
-
-(define (make-rational n d)
-  ((get 'make 'rational) n d))
-
 (define (install-complex-package)
   ;; imported procedures from rectangular
   ;; and polar packages
@@ -213,7 +175,6 @@
 ; End copied from SICP
 
 (install-scheme-number-package)
-(install-rational-package)
 (install-complex-package)
 
 ; Rectangular additions hacked into complex package
@@ -222,13 +183,17 @@
 (put 'real-part '(rectangular) (lambda (c) (car c)))
 (put 'imag-part '(rectangular) (lambda (c) (cdr c)))
 
-; Hacked-in coercion of rational to complex. This won't actually be invoked, due
-; to deficiencies in the 2.82 version of apply-generic.
-(put-coercion 'rational 'complex
-              (lambda (r)
-                (let ((n (car (contents r)))
-                      (d (cdr (contents r))))
-                  (make-complex-from-real-imag (/ n d) 0))))
+; Hacked-in support for imaginary. This won't actually be invoked, due to
+; deficiencies in the 2.82 version of apply-generic.
+(put 'make 'imaginary (lambda (x)
+                        (attach-tag 'imaginary x)))
+
+(put-coercion 'imaginary 'complex
+              (lambda (i)
+                (make-complex-from-real-imag 0 (contents i))))
+
+(define (make-imaginary x)
+  ((get 'make 'imaginary) x))
 
 (define (apply-generic op . args)
   (define (apply-generic-error type-tags)
@@ -272,7 +237,7 @@
 ; Test cases
 ; 1. Args of same type, operation defined.
 ; 2. Args of different types, one complex. Operation defined for complex.
-; 3. Args of type scheme-number and rational. Operation defined for complex.
+; 3. Args of type scheme-number and imaginary. Operation defined for complex.
 ;    (Won't work.)
 
 (define (add3 x y z)
@@ -301,12 +266,9 @@
                (make-complex-from-real-imag 3 8)))
 
 ; This won't work with the 2.82 version of apply-generic, because scheme-number
-; is not coerceable to rational, even though both are coerceable to complex.
-; scheme-number should actually be coerceable to rational as well, but I left
-; that conversion undefined to demonstrate a general limitation of the
-; algorithm.
+; is not coerceable to imaginary even though both are coerceable to complex.
 ;(newline)
 ;(display "1 + 2 + 5/6: ")
 ;(display (add3 (make-scheme-number 1)
 ;               (make-scheme-number 2)
-;               (make-rational 5 6)))
+;               (make-imaginary 5)))
