@@ -229,4 +229,19 @@ other, but both can be coerced to \texttt{'complex}, and addition is well
 defined for complex numbers. However, this version of \texttt{apply-generic}
 cannot perform this operation, because it can't find the right set of coercions.
 
+\section{Exercise 2.83}
+\begin{quote}
+    Suppose you are designing a generic arithmetic system for dealing with the
+    tower of types shown in Figure 2.25: integer, rational, real, complex. For
+    each type (except complex), design a procedure that raises objects of that
+    type one level in the tower. Show how to install a generic \texttt{raise}
+    operation that will work for each type (except complex).
+\end{quote}
+
+I didn't implement an entire package for \texttt{real}, and some aspects of
+\texttt{rational} are just hacked in. I may need to add more support later, but
+the actual types were outside the scope of this exercise.
+
+\lstinputlisting[firstline=235,lastline=245]{ch2/ex2.83.scm}
+
 \end{document}
