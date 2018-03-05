@@ -232,16 +232,16 @@
                 (make-complex-from-real-imag (contents x)
                                              0)))
 
-(define (raise n)
-  (define (get-result-type tag)
-    (cond
-      ((equal? tag 'scheme-number) 'rational)
-      ((equal? tag 'rational) 'real)
-      ((equal? tag 'real) 'complex)
-      (else (error "Cannot raise type " tag))))
+(define (get-next-higher-type tag)
+  (cond
+    ((equal? tag 'scheme-number) 'rational)
+    ((equal? tag 'rational) 'real)
+    ((equal? tag 'real) 'complex)
+    (else (error "Cannot raise type " tag))))
 
+(define (raise n)
   (let ((from-type (type-tag n))
-        (to-type (get-result-type (type-tag n))))
+        (to-type (get-next-higher-type (type-tag n))))
     ((get-coercion from-type to-type) n)))
 
 (define n (make-scheme-number 3))
@@ -263,3 +263,92 @@
 (newline)
 (display "complex: ")
 (display c)
+
+; Exericse 2.84
+
+; Based on the apply-generic from 2.82
+(define (apply-generic op . args)
+  (define (apply-generic-error type-tags)
+    (error "No method for these types"
+           (list type-tags)))
+
+  (define (get-type-depth tag)
+    (define (get-higher-type-and-depth tag depth)
+      (if (equal? tag 'complex)
+          (cons '() depth)
+          (get-higher-type-and-depth
+            (get-next-higher-type tag)
+            (1+ depth))))
+
+    (cdr (get-higher-type-and-depth tag 0)))
+
+  (define (higher-type? tag1 tag2)
+    (< (get-type-depth tag1)
+       (get-type-depth tag2)))
+
+  (define (highest-type type-tags)
+    (define (iterate type type-tags)
+      (cond ((null? type-tags) type)
+            ((higher-type? type (car type-tags))
+             (iterate type (cdr type-tags)))
+            (else (iterate (car type-tags) (cdr type-tags)))))
+
+    ; Assumes type-tags is non-null
+    (iterate (car type-tags) (cdr type-tags)))
+
+  (define (coerce-raise src target-type)
+    (let ((src-type (type-tag src)))
+      (cond ((higher-type? src-type target-type)
+             (error "Can't raise type to a lower type: "
+                    src-type target-type))
+            ((equal? (type-tag src) target-type) src)
+            (else (coerce-raise (raise src) target-type)))))
+
+  (define (all-same-type? type-tags)
+    (if (null? type-tags)
+        #t
+        (every (lambda (tag)
+                 (equal? (car type-tags) tag))
+               (cdr type-tags))))
+
+  ; Raise all the arguments to the type of the highest argument and try
+  ; again. If they are already all the same type, try raising them each
+  ; to the next highest type.
+  (define (apply-raise type-tags)
+    (let ((target-type
+            (if (all-same-type? type-tags)
+               (get-next-higher-type (car type-tags))
+               (highest-type type-tags))))
+      (apply apply-generic op (map (lambda (arg)
+                                     (coerce-raise arg target-type))
+                                   args))))
+
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+          (apply proc (map contents args))
+          (apply-raise type-tags)))))
+
+; Helper functions for this exercise
+(define s (make-scheme-number 7))
+(define r (make-rational 8 2))
+
+; Three-arg add from 2.82, for testing purposes
+(define (add3 x y z)
+  (apply-generic 'add x y z))
+(define (real-part c)
+  (apply-generic 'real-part c))
+(define (imag-part c)
+  (apply-generic 'imag-part c))
+
+(put 'add '(complex complex complex)
+     (lambda (x y z)
+       (make-complex-from-real-imag
+         (+ (real-part x) (real-part y) (real-part z))
+         (+ (imag-part x) (imag-part y) (imag-part z)))))
+
+(newline)
+(display "1 + 2 + 5/6: ")
+(display (add3 (make-scheme-number 1)
+               (make-scheme-number 2)
+               (make-rational 5 6)))
