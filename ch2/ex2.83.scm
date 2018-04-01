@@ -267,67 +267,67 @@
 ; Exericse 2.84
 
 ; Based on the apply-generic from 2.82
+(define (apply-generic-error type-tags)
+  (error "No method for these types"
+         (list type-tags)))
+
+(define (get-type-depth tag)
+  (define (get-higher-type-and-depth tag depth)
+    (if (equal? tag 'complex)
+      (cons '() depth)
+      (get-higher-type-and-depth
+        (get-next-higher-type tag)
+        (1+ depth))))
+
+  (cdr (get-higher-type-and-depth tag 0)))
+
+(define (higher-type? tag1 tag2)
+  (< (get-type-depth tag1)
+     (get-type-depth tag2)))
+
+(define (highest-type type-tags)
+  (define (iterate type type-tags)
+    (cond ((null? type-tags) type)
+          ((higher-type? type (car type-tags))
+           (iterate type (cdr type-tags)))
+          (else (iterate (car type-tags) (cdr type-tags)))))
+
+  ; Assumes type-tags is non-null
+  (iterate (car type-tags) (cdr type-tags)))
+
+(define (coerce-raise src target-type)
+  (let ((src-type (type-tag src)))
+    (cond ((higher-type? src-type target-type)
+           (error "Can't raise type to a lower type: "
+                  src-type target-type))
+          ((equal? (type-tag src) target-type) src)
+          (else (coerce-raise (raise src) target-type)))))
+
+(define (all-same-type? type-tags)
+  (if (null? type-tags)
+    #t
+    (every (lambda (tag)
+             (equal? (car type-tags) tag))
+           (cdr type-tags))))
+
+; Raise all the arguments to the type of the highest argument and try
+; again. If they are already all the same type, try raising them each
+; to the next highest type.
+(define (apply-raise op type-tags args)
+  (let ((target-type
+          (if (all-same-type? type-tags)
+            (get-next-higher-type (car type-tags))
+            (highest-type type-tags))))
+    (apply apply-generic op (map (lambda (arg)
+                                   (coerce-raise arg target-type))
+                                 args))))
+
 (define (apply-generic op . args)
-  (define (apply-generic-error type-tags)
-    (error "No method for these types"
-           (list type-tags)))
-
-  (define (get-type-depth tag)
-    (define (get-higher-type-and-depth tag depth)
-      (if (equal? tag 'complex)
-          (cons '() depth)
-          (get-higher-type-and-depth
-            (get-next-higher-type tag)
-            (1+ depth))))
-
-    (cdr (get-higher-type-and-depth tag 0)))
-
-  (define (higher-type? tag1 tag2)
-    (< (get-type-depth tag1)
-       (get-type-depth tag2)))
-
-  (define (highest-type type-tags)
-    (define (iterate type type-tags)
-      (cond ((null? type-tags) type)
-            ((higher-type? type (car type-tags))
-             (iterate type (cdr type-tags)))
-            (else (iterate (car type-tags) (cdr type-tags)))))
-
-    ; Assumes type-tags is non-null
-    (iterate (car type-tags) (cdr type-tags)))
-
-  (define (coerce-raise src target-type)
-    (let ((src-type (type-tag src)))
-      (cond ((higher-type? src-type target-type)
-             (error "Can't raise type to a lower type: "
-                    src-type target-type))
-            ((equal? (type-tag src) target-type) src)
-            (else (coerce-raise (raise src) target-type)))))
-
-  (define (all-same-type? type-tags)
-    (if (null? type-tags)
-        #t
-        (every (lambda (tag)
-                 (equal? (car type-tags) tag))
-               (cdr type-tags))))
-
-  ; Raise all the arguments to the type of the highest argument and try
-  ; again. If they are already all the same type, try raising them each
-  ; to the next highest type.
-  (define (apply-raise type-tags)
-    (let ((target-type
-            (if (all-same-type? type-tags)
-               (get-next-higher-type (car type-tags))
-               (highest-type type-tags))))
-      (apply apply-generic op (map (lambda (arg)
-                                     (coerce-raise arg target-type))
-                                   args))))
-
   (let ((type-tags (map type-tag args)))
     (let ((proc (get op type-tags)))
       (if proc
           (apply proc (map contents args))
-          (apply-raise type-tags)))))
+          (apply-raise op type-tags args)))))
 
 ; Helper functions for this exercise
 (define s (make-scheme-number 7))
@@ -352,3 +352,135 @@
 (display (add3 (make-scheme-number 1)
                (make-scheme-number 2)
                (make-rational 5 6)))
+
+; Exercise 2.85
+
+(define (project num)
+  (apply-generic 'project num))
+
+(put 'project '(complex)
+     (lambda (c)
+       (make-real (real-part c))))
+
+(define (real->rational r)
+  (define (iter n d iteration)
+    (if (or (= iteration 100)
+            (= (round n) n))
+        (make-rational n d)
+        (iter (* 10 n) (* 10 d) (1+ iteration))))
+
+  (iter r 1 0))
+
+(put 'project '(real)
+     real->rational)
+
+(put 'project '(rational)
+     (lambda (q)
+       (let ((val (/ (numer-rational q) (denom-rational q))))
+         (make-scheme-number (round val)))))
+
+(newline)
+(display "project 3 + 2i: ")
+(display (project (make-complex-from-real-imag 3 2)))
+
+(newline)
+(display "project 3.4: ")
+(display (project (make-real 3.4)))
+
+(newline)
+(display "project 3/4: ")
+(display (project (make-rational 3 4)))
+
+; equ? implementation copied from solution to Exercise 2.79. Implementation for
+; 'real arguments added for this solution.
+(define (equ? a b)
+  (apply-generic 'equ? a b))
+
+(define (install-equ?-package)
+  ; Internal procedures
+  (define (equ?-scheme-number a b)
+    ; The result is a boolean, so it doesn't get a type tag.
+    (= a b))
+
+  (define (equ?-rational a b)
+    (and (= (numer-rational a) (numer-rational b))
+         (= (denom-rational a) (denom-rational b))))
+
+  (define (equ?-real a b)
+    (= a b))
+
+  (define (equ?-complex a b)
+    (and (= (real-part a) (real-part b))
+         (= (imag-part a) (imag-part b))))
+
+  ; External interface
+  (put 'equ? '(scheme-number scheme-number) equ?-scheme-number)
+  (put 'equ? '(rational rational) equ?-rational)
+  (put 'equ? '(real real) equ?-real)
+  (put 'equ? '(complex complex) equ?-complex)
+
+  'done)
+
+(install-equ?-package)
+
+(newline)
+(display "5.0 == 5.0? ")
+(display (equ? (make-real 5) (make-real 5.0)))
+
+(newline)
+(display "5.0 == 50.0? ")
+(display (equ? (make-real 5.0) (make-real 50.0)))
+
+(define (drop x)
+  (if (equal? (type-tag x) 'scheme-number)
+      x
+      (let ((projection (project x)))
+        (if (not (equ? (raise projection) x))
+            x
+            (drop projection)))))
+
+(newline)
+(display "drop 3 + 5i: ")
+(display (drop (make-complex-from-real-imag 3 5)))
+
+(newline)
+(display "drop 3 + 0i: ")
+(display (drop (make-complex-from-real-imag 3 0)))
+
+(newline)
+(display "drop 3.7: ")
+(display (drop (make-real 3.7)))
+
+(newline)
+(display "drop 3.0: ")
+(display (drop (make-real 3.0)))
+
+(newline)
+(display "drop 2/3: ")
+(display (drop (make-rational 2 3)))
+
+(newline)
+(display "drop 6/2: ")
+(display (drop (make-rational 6 2)))
+
+(newline)
+(display "drop 3: ")
+(display (drop (make-scheme-number 3)))
+
+; Based on the apply-generic from 2.84
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+          (let ((result (apply proc (map contents args))))
+            ; This is a pretty janky way to detect type-tagged results
+            (if (pair? result)
+                (drop result)
+                result))
+          (apply-raise op type-tags args)))))
+
+(newline)
+(display "1 + 3.5 + 3/6: ")
+(display (add3 (make-scheme-number 1)
+               (make-real 3.5)
+               (make-rational 3 6)))

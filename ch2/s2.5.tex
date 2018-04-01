@@ -250,8 +250,8 @@ the actual types were outside the scope of this exercise.
     \texttt{apply-generic} procedure so that it coerces its arguments to have
     the same type by the method of successive raising, as discussed in this
     section. You will need to devise a way to test which of two types is higher
-    in the tower. Do this in a manner that is "compatible" with the rest of the
-    system and will not lead to problems in adding new levels to the tower.
+    in the tower. Do this in a manner that is ``compatible'' with the rest of
+    the system and will not lead to problems in adding new levels to the tower.
 \end{quote}
 
 The problem is somewhat ambiguous about whether \texttt{apply-generic} should
@@ -261,5 +261,53 @@ useful than stopping once all arguments are of the same type (as the
 useful set of arguments or can't raise anymore.
 
 \lstinputlisting[firstline=270,lastline=330]{ch2/ex2.83.scm}
+
+\section{Exercise 2.85}
+\begin{quote}
+    This section mentioned a method for ``simplifying'' a data object by
+    lowering it in the tower of types as far as possible. Design a procedure
+    \texttt{drop} that accomplishes this for the tower described in Exercise
+    2.83. The key is to decide, in some general way, whether an object can be
+    lowered. For example, the complex number $1.5 + 0i$ can be lowered as far
+    as \texttt{real}, the complex number $1 + 0i$ can be lowered as far as
+    \texttt{integer}, and the complex number $2 + 3i$ cannot be lowered at all.
+    Here is a plan for determining whether an object can be lowered: Begin by
+    defining a generic operation \texttt{project} that ``pushes'' an object
+    down in the tower. For example, projecting a complex number would involve
+    throwing away the imaginary part. Then a number can be dropped if, when we
+    \texttt{project} it and \texttt{raise} the result back to the type we
+    started with, we end up with something equal to what we started with. Show
+    how to implement this idea in detail, by writing a \texttt{drop} procedure
+    that drops an object as far as possible. You will need to design the
+    various projection operations and install \texttt{project} as a generic
+    operation in the system. You will also need to make use of a generic
+    equality predicate, such as described in Exercise 2.79. Finally, use
+    \texttt{drop} to rewrite \texttt{apply-generic} from Exercise 2.84 so that
+    it ''simplifies'' its answers.
+\end{quote}
+
+\texttt{project} is a generic operation similar to the other ones that use
+\texttt{apply-generic}. Since \texttt{apply-generic} now supports raising its
+arguments to types higher on the tower until it finds a defined operation, it is
+possible for \texttt{project}'s result to be of a type other than one type below
+the argument's type, even though a reasonable implmementation of the
+\texttt{project} operation should return a type one level below that of its
+argument. To account for this, \texttt{drop} has to check whether its argument
+is of a type that can be projected. It would probably be better if
+\texttt{project} returned some kind of error indicator when it couldn't project
+its argument, but this works as long as \texttt{project} is defined for all the
+types in the type tower that aren't at the bottom.
+
+\lstinputlisting[firstline=358,lastline=380]{ch2/ex2.83.scm}
+
+\lstinputlisting[firstline=434,lastline=440]{ch2/ex2.83.scm}
+
+\texttt{apply-generic} uses \texttt{drop} in a straightforward way. One fly in
+the ointment is the \texttt{drop} only works on type-tagged arguments, and
+\texttt{numer-rational} and \texttt{denom-rational} are generic operations that
+produce untyped results. Because of this, I check for the potential presence of
+a type tag in a rudimentary way that will not generalize well.
+
+\lstinputlisting[firstline=471,lastline=480]{ch2/ex2.83.scm}
 
 \end{document}
