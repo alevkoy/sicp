@@ -310,4 +310,40 @@ a type tag in a rudimentary way that will not generalize well.
 
 \lstinputlisting[firstline=471,lastline=480]{ch2/ex2.83.scm}
 
+\section{Exericse 2.86}
+\begin{quote}
+    Suppose we want to handle complex numbers whose real parts, imaginary
+    parts, magnitudes, and angles can be either ordinary numbers, rational
+    numbers, or other numbers we might wish to add to the system. Describe and
+    implement the changes to the system needed to accommodate this. You will
+    have to define operations such as \texttt{sine} and \texttt{cosine} that
+    are generic over ordinary numbers and rational numbers.
+\end{quote}
+
+In the system defined up to this point, primitive operations on complex numbers,
+e.g. \texttt{add-complex}, have been defined in terms of the accessors
+\texttt{real-part}, \texttt{imag-part}, \texttt{magnitude}, and \texttt{angle},
+which are taken to return bare Scheme numbers suitable for the application of
+primitive Scheme operations, e.g. \texttt{+}. In order to support typed fields
+in complex numbers, primitive operations on complex numbers will need to be
+implemented in terms of accessors that return such fields, and the accessors
+will need to be modified accordingly.
+
+On additional wrinkle is that it is no longer convenient to promote every
+number to a \texttt{'complex} number before performing arithmetic or other
+operations. The reason is that \texttt{'complex} numbers have typed components.
+A generic operation on a \texttt{'complex} number will eventually need to
+perform operations on the raw (untyped) components of that number. The generic
+operation will infinitely recurse if it promotes the components to
+\texttt{'complex} before operating on them. To avoid this, we need to define
+all of the operations used on components of \texttt{'complex} numbers in terms
+of \texttt{'real}. That way, all promotions on components will stop there and
+not recurse infinitely.
+
+For the sake of consistency, the implementation of \texttt{'div} for
+\texttt{'scheme-number} needs to return a \texttt{'rational} number.
+
+\lstinputlisting[firstline=503,lastline=517]{ch2/ex2.83.scm}
+\lstinputlisting[firstline=533,lastline=589]{ch2/ex2.83.scm}
+
 \end{document}

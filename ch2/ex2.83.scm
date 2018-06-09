@@ -484,3 +484,123 @@
 (display (add3 (make-scheme-number 1)
                (make-real 3.5)
                (make-rational 3 6)))
+
+; Exercise 2.86
+
+; Generic accessors for polar components
+(define (magnitude c)
+  (apply-generic 'magnitude c))
+(define (angle c)
+  (apply-generic 'angle c))
+
+; Implementations of accessors for 'complex to unwrap 'rectangular
+; or 'polar representations
+(put 'real-part '(complex) real-part)
+(put 'imag-part '(complex) imag-part)
+(put 'magnitude '(complex) magnitude)
+(put 'angle '(complex) angle)
+
+; Generic trigonometric operations
+(define (sin-generic arg)
+  (apply-generic 'sin arg))
+(define (cos-generic arg)
+  (apply-generic 'cos arg))
+(define (sqrt-generic arg)
+  (apply-generic 'sqrt arg))
+(define (atan-generic arg)
+  (apply-generic 'atan arg))
+
+; Implementations for 'real will work for lower types
+(put 'sin '(real) (lambda (r) (make-real (sin r))))
+(put 'cos '(real) (lambda (r) (make-real (cos r))))
+(put 'sqrt '(real) (lambda (r) (make-real (sqrt r))))
+(put 'atan '(real) (lambda (r) (make-real (atan r))))
+
+; Arithmetic operations on real numbers that expect untyped components
+(put 'add '(real real)
+     (lambda (z1 z2) (make-real (+ z1 z2))))
+(put 'sub '(real real)
+     (lambda (z1 z2) (make-real (- z1 z2))))
+(put 'mul '(real real)
+     (lambda (z1 z2) (make-real (* z1 z2))))
+(put 'div '(real real)
+     (lambda (z1 z2) (make-real (/ z1 z2))))
+
+; Type-correct implementation of 'div for 'scheme-number
+(put 'div '(scheme-number scheme-number)
+     (lambda (n1 n2) (make-rational n1 n2)))
+
+; Constructor and accessors for rectangular representations of complex
+; numbers that expect typed components; real-part and imag-part defined
+; above
+(put 'magnitude '(rectangular)
+     (lambda (c)
+       (sqrt-generic (add (mul (car c) (car c))
+                          (mul (cdr c) (cdr c))))))
+(put 'angle '(rectangular)
+     (lambda (c)
+       (atan-generic (div (cdr c) (car c)))))
+
+; Constructor and accessors for polar representations of complex
+; numbers that expect typed components
+(put 'make-from-mag-ang 'polar
+     (lambda (x y) (attach-tag 'polar (cons x y))))
+(put 'real-part '(polar)
+     (lambda (c)
+       (mul (car c) (cos-generic (cdr c)))))
+(put 'imag-part '(polar)
+     (lambda (c)
+       (mul (car c) (sin-generic (cdr c)))))
+(put 'magnitude '(polar) (lambda (c) (car c)))
+(put 'angle '(polar) (lambda (c) (cdr c)))
+
+; Arithmetic operations on complex numbers that expect typed components
+(put 'add '(complex complex)
+     (lambda (z1 z2)
+       (make-complex-from-real-imag
+         (add (real-part z1) (real-part z2))
+         (add (imag-part z1) (imag-part z2)))))
+(put 'sub '(complex complex)
+     (lambda (z1 z2)
+       (make-complex-from-real-imag
+         (sub (real-part z1) (real-part z2))
+         (sub (imag-part z1) (imag-part z2)))))
+(put 'mul '(complex complex)
+     (lambda (z1 z2)
+       (make-complex-from-mag-ang
+         (mul (magnitude z1) (magnitude z2))
+         (add (angle z1) (angle z2)))))
+(put 'div '(complex complex)
+     (lambda (z1 z2)
+       (make-complex-from-mag-ang
+         (div (magnitude z1) (magnitude z2))
+         (sub (angle z1) (angle z2)))))
+
+; Coercions from and to complex numbers and related functions that expect
+; complex numbers to have typed components
+(put 'project '(complex) real-part)
+(put-coercion 'real 'complex
+              (lambda (x)
+                ; x is already of type 'real
+                (make-complex-from-real-imag x (make-real 0))))
+(put 'equ? '(complex complex)
+     (lambda (a b)
+       (and (equ? (real-part a) (real-part b))
+            (equ? (imag-part a) (imag-part b)))))
+
+(define c1 (make-complex-from-real-imag (make-real 3.5) (make-rational 5 6)))
+(define c2 (make-complex-from-mag-ang (make-scheme-number 3)
+                                      (make-rational 11 2)))
+
+(newline)
+(display "3.5+5/6i + 3+11/2i: ")
+(display (add c1 c2))
+
+(define c3 (make-complex-from-real-imag (make-rational 8 2)
+                                        (make-real 6.0)))
+(define c4 (make-complex-from-mag-ang (make-rational 6 3)
+                                      (make-scheme-number 0)))
+
+(newline)
+(display "8/2+6.0i / 6/3r0: ")
+(display (div c3 c4))
