@@ -346,4 +346,28 @@ For the sake of consistency, the implementation of \texttt{'div} for
 \lstinputlisting[firstline=503,lastline=517]{ch2/ex2.83.scm}
 \lstinputlisting[firstline=533,lastline=589]{ch2/ex2.83.scm}
 
+\section{Exercise 2.87}
+\begin{quote}
+    Install \texttt{=zero?} for polynomials in the generic arithmetic package.
+    This will allow \texttt{adjoin-term} to work for polynomials with
+    coefficients that are themselves polynomials.
+\end{quote}
+
+In Exercise 2.80, I defined \texttt{=zero?} using two generic operations:
+\texttt{equ?} and \texttt{make-zero}. This is straightforward for numbers, but
+for polynomials, it is not obvious what the canonical form of a zero-valued
+polynomial should be. Whatever I choose, deciding whether two polynomials are
+equal in the general case is fairly complex. Rather than deal with that
+unnecessarily, I here redefine \texttt{=zero?} to use a single generic operation
+of the same name.
+
+I could have improved the efficiency of the implementation for polynomials by
+defining and using a predicate that takes a term list and returns whether it is
+zero-valued, rather than reassembling a polynomial with an edited term list.
+However, I opted for brevity. \emph{SICP} has yet to describe the resource costs
+of primitive list operations and seems to hand them out like candy, so I don't
+feel too bad.
+
+\lstinputlisting[firstline=565,lastline=582]{ch2/ex2.87.scm}
+
 \end{document}
